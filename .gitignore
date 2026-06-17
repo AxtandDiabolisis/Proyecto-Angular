@@ -1,0 +1,31 @@
+# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/.angular/cache
+
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
+
+# IDEs and editors
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# System files
+.DS_Store
+Thumbs.db

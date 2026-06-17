@@ -1,0 +1,132 @@
+<div class="lency-page">
+  <header class="lency-header">
+    <div class="lency-container header-inner">
+      <a class="lency-logo" routerLink="/lenceria" aria-label="UNIALRE Hogar">
+        <img src="assets/img/lency/logo-lency.png" alt="UNIALRE Hogar">
+        <span>UNIALRE Hogar</span>
+      </a>
+
+      <nav class="lency-nav" aria-label="Menu principal lenceria">
+        <a routerLink="/lenceria">Nuestros productos</a>
+        <a href="#sobre-nosotros">Sobre Nosotros</a>
+        <a href="#preguntas-frecuentes">Preguntas Frecuentes</a>
+        <a href="#contacto-lency">Contacto</a>
+        <a routerLink="/" class="back-link">Nacional Sellos</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="search-band">
+    <div class="lency-container search-panel">
+      <div>
+        <p class="kicker">Busqueda</p>
+        <h1>Encuentra productos para vestir tu hogar</h1>
+      </div>
+      <label class="search-box">
+        <i class="fa fa-search"></i>
+        <input type="search" placeholder="Buscar cobijas, sabanas, toallas...">
+      </label>
+    </div>
+  </section>
+
+  <section class="shop-hero">
+    <div class="lency-container">
+      <p><a routerLink="/">Inicio</a> / Nuestros Productos</p>
+      <h2>Nuestros productos</h2>
+    </div>
+  </section>
+
+  <main class="lency-container shop-layout">
+    <aside class="category-panel" aria-label="Categorias de productos">
+      <p>Elige una categoria</p>
+      <div class="category-list">
+        <button
+          *ngFor="let category of categories"
+          type="button"
+          [class.active]="selectedCategory === category.name"
+          (click)="selectCategory(category.name)"
+        >
+          <span>{{ category.name }}</span>
+          <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
+        </button>
+      </div>
+    </aside>
+
+    <section class="products-area">
+      <div class="products-toolbar">
+        <p>Mostrando 1-12 de 16 resultados</p>
+        <select [(ngModel)]="sortOption" aria-label="Ordenar productos">
+          <option value="popular">Ordenar por popularidad</option>
+          <option value="latest">Ordenar por las ultimas</option>
+          <option value="price-low">Ordenar por precio: bajo a alto</option>
+          <option value="price-high">Ordenar por precio: alto a bajo</option>
+        </select>
+      </div>
+
+      <div class="products-grid">
+        <article class="product-card" *ngFor="let product of filteredProducts">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name">
+          </div>
+          <div class="product-info">
+            <span>{{ product.category }}</span>
+            <h3>{{ product.name }}</h3>
+            <button type="button" (click)="openWhatsApp(product)">
+              <i class="fa-brands fa-whatsapp"></i>
+              Consultar por WhatsApp
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <nav class="pagination" aria-label="Paginacion">
+        <button type="button" [class.active]="currentPage === 1" (click)="goToPage(1)">1</button>
+        <button type="button" [class.active]="currentPage === 2" (click)="goToPage(2)">2</button>
+        <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </nav>
+    </section>
+  </main>
+
+  <footer id="contacto-lency" class="lency-footer">
+    <div class="lency-container footer-grid">
+      <div>
+        <h3>Estamos ubicados en Bogota</h3>
+        <p>Calle 14 #20-10 (Centro)</p>
+        <p>Transmilenio: Estacion San Facon</p>
+        <p>Detras de San Andresito de San Facon</p>
+        <p>Lunes a sabado: 9:00 a.m. - 6:00 p.m.</p>
+      </div>
+      <div>
+        <h3>Empresa</h3>
+        <a routerLink="/lenceria">Nuestros productos</a>
+        <a href="#sobre-nosotros">Sobre nosotros</a>
+      </div>
+      <div>
+        <h3>Servicios</h3>
+        <a href="#preguntas-frecuentes">Preguntas frecuentes</a>
+      </div>
+      <div>
+        <h3>Contactanos</h3>
+        <p>320 3109797</p>
+        <p>320 2336032</p>
+        <p>tuhogarlency@gmail.com</p>
+      </div>
+      <div>
+        <h3>Informacion</h3>
+        <p>Como llegar</p>
+        <p>Dropi numero de bodega 19816</p>
+        <div class="lency-social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">2025 Lencyhogar © - Todos los derechos reservados.</div>
+  </footer>
+
+  <a class="lency-whatsapp" href="https://wa.me/573203109797" target="_blank" rel="noreferrer" aria-label="WhatsApp Lency">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+</div>

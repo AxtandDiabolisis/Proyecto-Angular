@@ -1,0 +1,133 @@
+<div class="hardware-page">
+  <div class="top-bar">
+    <div class="container top-bar__inner">
+      <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">
+        <i class="fa-brands fa-whatsapp"></i>
+        Cotizaciones: 304 615 9935
+      </a>
+      <span>Herramientas, insumos y materiales para tus proyectos</span>
+    </div>
+  </div>
+
+  <header class="hardware-header">
+    <nav class="container nav" aria-label="Navegacion ferreteria">
+      <a class="brand" routerLink="/">
+        <i class="fa fa-hammer"></i>
+        <span>UNIALRE Ferreteria</span>
+      </a>
+      <div class="nav-links">
+        <a href="#productos">Productos</a>
+        <a href="#asesoria">Asesoria</a>
+        <a href="#contacto-ferreteria">Contacto</a>
+        <a routerLink="/">Nacional Sellos</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero__overlay"></div>
+      <div class="container hero__content">
+        <p class="eyebrow">Ferreteria y herramientas</p>
+        <h1>Todo lo que necesitas para construir, reparar y crear</h1>
+        <p>
+          Herramientas manuales, equipos electricos, insumos y materiales para hogares,
+          talleres, contratistas y empresas.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#productos">Ver productos</a>
+          <a class="btn btn--light" href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Cotizar por WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="productos" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Categorias</p>
+          <h2>Herramientas listas para el trabajo diario</h2>
+        </div>
+
+        <div class="products-grid">
+          <article class="tool-card" *ngFor="let product of products">
+            <i class="fa" [class]="product.icon"></i>
+            <span>{{ product.category }}</span>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <button type="button" (click)="openWhatsApp(product.name)">
+              <i class="fa-brands fa-whatsapp"></i>
+              Consultar
+            </button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="asesoria" class="section section--dark">
+      <div class="container split">
+        <div>
+          <p class="eyebrow">Asesoria tecnica</p>
+          <h2>Te ayudamos a elegir la herramienta correcta</h2>
+          <p>
+            Cuéntanos el tipo de trabajo, superficie, uso esperado y presupuesto.
+            Te recomendamos opciones practicas para comprar sin perder tiempo.
+          </p>
+        </div>
+        <div class="stats">
+          <div>
+            <strong>+500</strong>
+            <span>Referencias disponibles</span>
+          </div>
+          <div>
+            <strong>24h</strong>
+            <span>Respuesta a cotizaciones</span>
+          </div>
+          <div>
+            <strong>100%</strong>
+            <span>Orientacion personalizada</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shipping-strip">
+      <div class="container">
+        <i class="fa fa-truck-fast"></i>
+        <span>Despachos y entregas coordinadas para tus compras</span>
+      </div>
+    </section>
+
+    <section id="contacto-ferreteria" class="section contact-band">
+      <div class="container contact">
+        <div>
+          <p class="eyebrow">Contacto</p>
+          <h2>Cotiza herramientas y materiales</h2>
+          <p>Escríbenos por WhatsApp y recibe acompañamiento para tu proyecto.</p>
+        </div>
+        <a class="btn btn--primary" href="https://wa.me/573046159935?text=Hola,%20quiero%20cotizar%20productos%20de%20ferreteria" target="_blank" rel="noreferrer">
+          <i class="fa-brands fa-whatsapp"></i>
+          Hablar con asesor
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <h3>UNIALRE Ferreteria</h3>
+        <p>Herramientas, materiales e insumos para que cada proyecto avance.</p>
+      </div>
+      <div>
+        <h3>Contacto</h3>
+        <p>304 615 9935</p>
+        <p>Bogota y envios coordinados</p>
+      </div>
+      <a routerLink="/">Volver a Nacional Sellos</a>
+    </div>
+  </footer>
+
+  <a class="whatsapp-float" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp ferreteria">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+</div>
