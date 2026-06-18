@@ -1,133 +1,157 @@
 <div class="hardware-page">
-  <div class="top-bar">
-    <div class="container top-bar__inner">
-      <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">
-        <i class="fa-brands fa-whatsapp"></i>
-        Cotizaciones: 304 615 9935
-      </a>
-      <span>Herramientas, insumos y materiales para tus proyectos</span>
-    </div>
-  </div>
-
   <header class="hardware-header">
-    <nav class="container nav" aria-label="Navegacion ferreteria">
-      <a class="brand" routerLink="/">
+    <div class="hardware-container header-inner">
+      <a class="hardware-logo" routerLink="/principal" aria-label="UNIALRE Ferreteria">
         <i class="fa fa-hammer"></i>
         <span>UNIALRE Ferreteria</span>
       </a>
-      <div class="nav-links">
-        <a href="#productos">Productos</a>
+
+      <nav class="hardware-nav" aria-label="Menu principal ferreteria">
+        <a routerLink="/ferreteria">Nuestros productos</a>
         <a href="#asesoria">Asesoria</a>
+        <a href="#preguntas">Preguntas Frecuentes</a>
         <a href="#contacto-ferreteria">Contacto</a>
-        <a routerLink="/">Nacional Sellos</a>
-      </div>
-    </nav>
+        <a routerLink="/sellos" class="back-link">UNIALRE Sellos</a>
+        <a routerLink="/lenceria" class="back-link">UNIALRE Lenceria</a>
+        <a routerLink="/principal" class="back-link">UNIALRE Pagina Principal</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero__overlay"></div>
-      <div class="container hero__content">
-        <p class="eyebrow">Ferreteria y herramientas</p>
-        <h1>Todo lo que necesitas para construir, reparar y crear</h1>
-        <p>
-          Herramientas manuales, equipos electricos, insumos y materiales para hogares,
-          talleres, contratistas y empresas.
-        </p>
-        <div class="hero__actions">
-          <a class="btn btn--primary" href="#productos">Ver productos</a>
-          <a class="btn btn--light" href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Cotizar por WhatsApp</a>
-        </div>
+  <section class="search-band">
+    <div class="hardware-container search-panel">
+      <div>
+        <p class="kicker">Busqueda</p>
+        <h1>Encuentra herramientas para cada proyecto</h1>
       </div>
-    </section>
+      <label class="search-box">
+        <i class="fa fa-search"></i>
+        <input type="search" placeholder="Buscar taladros, llaves, tornillos...">
+      </label>
+    </div>
+  </section>
 
-    <section id="productos" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Categorias</p>
-          <h2>Herramientas listas para el trabajo diario</h2>
-        </div>
+  <section class="shop-hero">
+    <div class="hardware-container">
+      <p><a routerLink="/">Inicio</a> / Ferreteria</p>
+      <h2>Nuestros productos</h2>
+    </div>
+  </section>
 
-        <div class="products-grid">
-          <article class="tool-card" *ngFor="let product of products">
+  <main id="productos" class="hardware-container shop-layout">
+    <aside class="category-panel" aria-label="Categorias de ferreteria">
+      <p>Elige una categoria</p>
+      <div class="category-list">
+        <button
+          *ngFor="let category of categories"
+          type="button"
+          [class.active]="selectedCategory === category.name"
+          (click)="selectCategory(category.name)"
+        >
+          <span>{{ category.name }}</span>
+          <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
+        </button>
+      </div>
+    </aside>
+
+    <section class="products-area">
+      <div class="products-toolbar">
+        <p>Mostrando {{ filteredProducts.length }} de {{ products.length }} resultados</p>
+        <select [(ngModel)]="sortOption" aria-label="Ordenar productos de ferreteria">
+          <option value="popular">Ordenar por popularidad</option>
+          <option value="latest">Ordenar por las ultimas</option>
+          <option value="price-low">Ordenar por precio: bajo a alto</option>
+          <option value="price-high">Ordenar por precio: alto a bajo</option>
+        </select>
+      </div>
+
+      <div class="products-grid">
+        <article class="product-card" *ngFor="let product of filteredProducts">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name">
             <i class="fa" [class]="product.icon"></i>
+          </div>
+          <div class="product-info">
             <span>{{ product.category }}</span>
             <h3>{{ product.name }}</h3>
             <p>{{ product.description }}</p>
             <button type="button" (click)="openWhatsApp(product.name)">
               <i class="fa-brands fa-whatsapp"></i>
-              Consultar
+              Consultar por WhatsApp
             </button>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="asesoria" class="section section--dark">
-      <div class="container split">
-        <div>
-          <p class="eyebrow">Asesoria tecnica</p>
-          <h2>Te ayudamos a elegir la herramienta correcta</h2>
-          <p>
-            Cuéntanos el tipo de trabajo, superficie, uso esperado y presupuesto.
-            Te recomendamos opciones practicas para comprar sin perder tiempo.
-          </p>
-        </div>
-        <div class="stats">
-          <div>
-            <strong>+500</strong>
-            <span>Referencias disponibles</span>
           </div>
-          <div>
-            <strong>24h</strong>
-            <span>Respuesta a cotizaciones</span>
-          </div>
-          <div>
-            <strong>100%</strong>
-            <span>Orientacion personalizada</span>
-          </div>
-        </div>
+        </article>
       </div>
-    </section>
 
-    <section class="shipping-strip">
-      <div class="container">
-        <i class="fa fa-truck-fast"></i>
-        <span>Despachos y entregas coordinadas para tus compras</span>
-      </div>
-    </section>
-
-    <section id="contacto-ferreteria" class="section contact-band">
-      <div class="container contact">
-        <div>
-          <p class="eyebrow">Contacto</p>
-          <h2>Cotiza herramientas y materiales</h2>
-          <p>Escríbenos por WhatsApp y recibe acompañamiento para tu proyecto.</p>
-        </div>
-        <a class="btn btn--primary" href="https://wa.me/573046159935?text=Hola,%20quiero%20cotizar%20productos%20de%20ferreteria" target="_blank" rel="noreferrer">
-          <i class="fa-brands fa-whatsapp"></i>
-          Hablar con asesor
-        </a>
-      </div>
+      <nav class="pagination" aria-label="Paginacion ferreteria">
+        <button type="button" [class.active]="currentPage === 1" (click)="goToPage(1)">1</button>
+        <button type="button" [class.active]="currentPage === 2" (click)="goToPage(2)">2</button>
+        <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </nav>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer__inner">
+  <section id="asesoria" class="advice-band">
+    <div class="hardware-container advice-grid">
       <div>
-        <h3>UNIALRE Ferreteria</h3>
-        <p>Herramientas, materiales e insumos para que cada proyecto avance.</p>
+        <p class="kicker">Asesoria tecnica</p>
+        <h2>Te ayudamos a elegir la herramienta correcta</h2>
       </div>
-      <div>
-        <h3>Contacto</h3>
-        <p>304 615 9935</p>
-        <p>Bogota y envios coordinados</p>
+      <div class="advice-cards">
+        <div>
+          <strong>+500</strong>
+          <span>Referencias disponibles</span>
+        </div>
+        <div>
+          <strong>24h</strong>
+          <span>Respuesta a cotizaciones</span>
+        </div>
+        <div>
+          <strong>100%</strong>
+          <span>Orientacion personalizada</span>
+        </div>
       </div>
-      <a routerLink="/">Volver a Nacional Sellos</a>
     </div>
+  </section>
+
+  <footer id="contacto-ferreteria" class="hardware-footer">
+    <div class="hardware-container footer-grid">
+      <div>
+        <h3>Estamos ubicados en Bogota</h3>
+        <p>Calle 14 #20-10 (Centro)</p>
+        <p>Atencion para hogar, taller y obra</p>
+        <p>Lunes a sabado: 9:00 a.m. - 6:00 p.m.</p>
+      </div>
+      <div>
+        <h3>Empresa</h3>
+        <a routerLink="/ferreteria">Nuestros productos</a>
+        <a href="#asesoria">Asesoria</a>
+      </div>
+      <div>
+        <h3>Servicios</h3>
+        <a href="#preguntas">Preguntas frecuentes</a>
+        <a routerLink="/sellos">UNIALRE Sellos</a>
+        <a routerLink="/lenceria">UNIALRE Lenceria</a>
+      </div>
+      <div>
+        <h3>Contactanos</h3>
+        <p>304 615 9935</p>
+        <p>ventas@unialre.co</p>
+      </div>
+      <div>
+        <h3>Redes</h3>
+        <div class="hardware-social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="copyright">2026 UNIALRE Ferreteria © - Todos los derechos reservados.</div>
   </footer>
 
-  <a class="whatsapp-float" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp ferreteria">
+  <a class="hardware-whatsapp" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp ferreteria">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 </div>

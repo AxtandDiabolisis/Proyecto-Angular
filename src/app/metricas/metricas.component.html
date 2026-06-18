@@ -1,0 +1,135 @@
+<div class="metrics-page">
+  <header class="metrics-header">
+    <div class="metrics-container header-inner">
+      <a class="brand" routerLink="/">
+        <i class="fa fa-chart-line"></i>
+        <span>Metricas UNIALRE</span>
+      </a>
+
+      <nav class="metrics-nav" aria-label="Navegacion de metricas">
+        <a routerLink="/">Principal</a>
+        <a routerLink="/sellos">Sellos</a>
+        <a routerLink="/lenceria">Lenceria</a>
+        <a routerLink="/ferreteria">Ferreteria</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="metrics-container dashboard">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Panel de analitica</p>
+        <h1>Metricas de visitas, productos y conversiones</h1>
+      </div>
+      <div class="hero-actions">
+        <span>Datos demostrativos</span>
+        <button type="button" (click)="downloadExcel()">
+          <i class="fa fa-file-excel"></i>
+          Descargar Excel
+        </button>
+      </div>
+    </section>
+
+    <section class="summary-grid" aria-label="Resumen general">
+      <article>
+        <i class="fa fa-eye"></i>
+        <span>Visitas totales</span>
+        <strong>{{ totalVisits }}</strong>
+      </article>
+      <article>
+        <i class="fa fa-computer-mouse"></i>
+        <span>Clics totales</span>
+        <strong>{{ totalClicks }}</strong>
+      </article>
+      <article>
+        <i class="fa-brands fa-whatsapp"></i>
+        <span>Consultas WhatsApp</span>
+        <strong>{{ totalWhatsapp }}</strong>
+      </article>
+      <article>
+        <i class="fa fa-arrow-trend-up"></i>
+        <span>Conversion promedio</span>
+        <strong>{{ averageConversion }}%</strong>
+      </article>
+    </section>
+
+    <section class="charts-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Visitas por pantalla</h2>
+          <p>Comparativo de trafico por ruta.</p>
+        </div>
+        <div class="bar-list">
+          <div class="bar-row" *ngFor="let metric of pageMetrics">
+            <div class="bar-label">
+              <span>{{ metric.name }}</span>
+              <strong>{{ metric.visits }}</strong>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width.%]="metric.visits / maxVisits * 100" [style.background]="metric.color"></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Tendencia semanal</h2>
+          <p>Visitas por dia.</p>
+        </div>
+        <div class="trend-chart">
+          <div class="trend-column" *ngFor="let metric of visitTrend">
+            <div class="trend-bar" [style.height.%]="metric.visits / maxTrendVisits * 100"></div>
+            <span>{{ metric.day }}</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="charts-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Clics por producto</h2>
+          <p>Productos con mayor interes.</p>
+        </div>
+        <div class="product-bars">
+          <div class="product-row" *ngFor="let product of productMetrics">
+            <div>
+              <strong>{{ product.name }}</strong>
+              <span>{{ product.line }}</span>
+            </div>
+            <div class="mini-track">
+              <div class="mini-fill" [style.width.%]="product.clicks / maxProductClicks * 100"></div>
+            </div>
+            <b>{{ product.clicks }}</b>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Rendimiento por pantalla</h2>
+          <p>Visitas, clics y conversion.</p>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Pantalla</th>
+              <th>Visitas</th>
+              <th>Clics</th>
+              <th>Conv.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let metric of pageMetrics">
+              <td>{{ metric.name }}</td>
+              <td>{{ metric.visits }}</td>
+              <td>{{ metric.clicks }}</td>
+              <td>{{ metric.conversion }}%</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+  </main>
+</div>

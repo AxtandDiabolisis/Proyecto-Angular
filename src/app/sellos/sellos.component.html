@@ -1,306 +1,128 @@
-<div class="page">
-  <div class="top-bar">
-    <div class="container top-bar__inner">
-      <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">
-        <i class="fa-brands fa-whatsapp"></i>
-        WhatsApp: 304 615 9935
+<div class="stamps-page">
+  <header class="stamps-header">
+    <div class="stamps-container header-inner">
+      <a class="stamps-logo" routerLink="/principal" aria-label="UNIALRE Sellos">
+        <img src="assets/img/logo-sellos.png" alt="UNIALRE Sellos">
+        <span>UNIALRE Sellos</span>
       </a>
-      <div class="social-links" aria-label="Redes sociales">
-        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-      </div>
+
+      <nav class="stamps-nav" aria-label="Menu principal sellos">
+        <a routerLink="/sellos">Nuestros productos</a>
+        <a href="#asesoria">Asesoria</a>
+        <a href="#contacto-sellos">Contacto</a>
+        <a routerLink="/principal" class="back-link">Pagina principal</a>
+      </nav>
     </div>
-  </div>
-
-  <header class="site-header">
-    <nav class="container nav" aria-label="Navegacion principal">
-      <a class="brand" href="#inicio" (click)="closeMenu()">
-        <img src="assets/img/logo-sellos.png" alt="UNIALRE">
-      </a>
-
-      <button
-        class="nav-toggle"
-        type="button"
-        aria-label="Abrir menu"
-        [attr.aria-expanded]="menuOpen"
-        (click)="toggleMenu()"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <ul class="nav-menu" [class.nav-menu--open]="menuOpen">
-        <li><a href="#inicio" (click)="closeMenu()">Inicio</a></li>
-        <li><a href="#nosotros" (click)="closeMenu()">Nosotros</a></li>
-        <li class="dropdown">
-          <a href="#servicios">Servicios <i class="fa fa-chevron-down"></i></a>
-          <ul class="dropdown-menu">
-            <li><a href="#servicios" (click)="closeMenu()">Sellos manuales</a></li>
-            <li><a href="#servicios" (click)="closeMenu()">Sellos automaticos</a></li>
-            <li><a href="#servicios" (click)="closeMenu()">Insumos</a></li>
-            <li><a href="#servicios" (click)="closeMenu()">Corte laser</a></li>
-              <li><a href="#servicios" (click)="closeMenu()">Tufting</a></li>
-              <li><a href="/lenceria" target="_blank" rel="noreferrer" (click)="closeMenu()">Lenceria</a></li>
-              <li><a href="/ferreteria" target="_blank" rel="noreferrer" (click)="closeMenu()">Ferreteria</a></li>
-          </ul>
-        </li>
-        <li><a href="#contacto" (click)="closeMenu()">Contacto</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <main>
-    <section id="inicio" class="hero" aria-label="Carrusel principal">
-      <article
-        class="hero__slide"
-        *ngFor="let slide of heroSlides; let i = index"
-        [class.hero__slide--active]="i === currentHeroSlide"
-        [style.background-image]="'url(' + slide.image + ')'"
-        [attr.aria-hidden]="i !== currentHeroSlide"
-      >
-        <div class="hero__overlay"></div>
-        <div class="container hero__content">
-          <p class="eyebrow">{{ slide.eyebrow }}</p>
-          <h1>{{ slide.title }}</h1>
-          <p class="hero__text">{{ slide.text }}</p>
-          <div class="hero__actions">
-            <a class="btn btn--primary" [href]="slide.primaryLink">{{ slide.primaryLabel }}</a>
-            <a class="btn btn--light" [href]="slide.secondaryLink">{{ slide.secondaryLabel }}</a>
-          </div>
-        </div>
-      </article>
+  <section class="search-band">
+    <div class="stamps-container search-panel">
+      <div>
+        <p class="kicker">Busqueda</p>
+        <h1>Encuentra el sello ideal para tu negocio</h1>
+      </div>
+      <label class="search-box">
+        <i class="fa fa-search"></i>
+        <input type="search" placeholder="Buscar automaticos, fechadores, tintas...">
+      </label>
+    </div>
+  </section>
 
-      <button class="hero__arrow hero__arrow--prev" type="button" aria-label="Imagen anterior" (click)="previousHeroSlide()">
-        <i class="fa fa-chevron-left"></i>
-      </button>
-      <button class="hero__arrow hero__arrow--next" type="button" aria-label="Siguiente imagen" (click)="nextHeroSlide()">
-        <i class="fa fa-chevron-right"></i>
-      </button>
+  <section class="shop-hero">
+    <div class="stamps-container">
+      <p><a routerLink="/">Inicio</a> / Sellos</p>
+      <h2>Nuestros productos</h2>
+    </div>
+  </section>
 
-      <div class="hero__dots" aria-label="Seleccionar diapositiva">
+  <main class="stamps-container shop-layout">
+    <aside class="category-panel" aria-label="Categorias de sellos">
+      <p>Elige una categoria</p>
+      <div class="category-list">
         <button
-          *ngFor="let slide of heroSlides; let i = index"
+          *ngFor="let category of categories"
           type="button"
-          [class.hero__dot--active]="i === currentHeroSlide"
-          [attr.aria-label]="'Ver diapositiva ' + (i + 1)"
-          [attr.aria-current]="i === currentHeroSlide"
-          (click)="goToHeroSlide(i)"
-        ></button>
+          [class.active]="selectedCategory === category.name"
+          (click)="selectCategory(category.name)"
+        >
+          <span>{{ category.name }}</span>
+          <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
+        </button>
       </div>
-    </section>
+    </aside>
 
-    <section id="servicios" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Servicios</p>
-          <h2>Todo para marcar, identificar y personalizar</h2>
-        </div>
-
-        <div class="cards services-grid">
-          <article class="service-card">
-            <i class="fa fa-stamp"></i>
-            <h3>Venta de sellos manuales y automaticos</h3>
-            <p>Sellos practicos, durables y listos para el ritmo diario de tu negocio.</p>
-          </article>
-          <article class="service-card">
-            <i class="fa fa-tint"></i>
-            <h3>Venta de insumos para sellos</h3>
-            <p>Tintas, repuestos y accesorios para mantener tus sellos siempre activos.</p>
-          </article>
-          <article class="service-card">
-            <i class="fa fa-pen-nib"></i>
-            <h3>Personalizacion de sellos</h3>
-            <p>Disenos a la medida para marcas, firmas, certificaciones y documentos.</p>
-          </article>
-          <article class="service-card">
-            <i class="fa fa-bolt"></i>
-            <h3>Corte laser sobre diferentes superficies</h3>
-            <p>Acabados precisos para proyectos corporativos, comerciales y creativos.</p>
-          </article>
-          <article class="service-card">
-            <i class="fa fa-brush"></i>
-            <h3>Tufting</h3>
-            <p>Diseños personalizados para proyectos creativos y decorativos.</p>
-          </article>
-          <a class="service-card service-card--link" href="/lenceria" target="_blank" rel="noreferrer" aria-label="Abrir la pagina de lenceria en una pestaña nueva">
-            <i class="fa fa-bed"></i>
-            <h3>Lenceria</h3>
-            <p>Diseños exclusivos para el hogar.</p>
-          </a>
-          <a class="service-card service-card--link" href="/ferreteria" target="_blank" rel="noreferrer" aria-label="Abrir la pagina de ferreteria en una pestaña nueva">
-            <i class="fa fa-tools"></i>
-            <h3>Ferretería</h3>
-            <p>Herramientas y materiales para tus proyectos de construcción y reparación.</p>
-          </a>
-        </div>
+    <section class="products-area">
+      <div class="products-toolbar">
+        <p>Mostrando {{ filteredProducts.length }} de {{ products.length }} resultados</p>
+        <select [(ngModel)]="sortOption" aria-label="Ordenar productos de sellos">
+          <option value="popular">Ordenar por popularidad</option>
+          <option value="latest">Ordenar por las ultimas</option>
+          <option value="price-low">Ordenar por precio: bajo a alto</option>
+          <option value="price-high">Ordenar por precio: alto a bajo</option>
+        </select>
       </div>
-    </section>
 
-    <section id="nosotros" class="section section--soft">
-      <div class="container about">
-        <div class="about__image">
-          <img src="assets/img/sellos-about.jpg" alt="Sellos personalizados sobre una mesa de trabajo">
-        </div>
-        <div class="about__content">
-          <p class="eyebrow">Nosotros</p>
-          <h2>Experiencia, detalle y entregas confiables</h2>
-          <p>
-            Creamos soluciones de marcacion para negocios que necesitan calidad constante,
-            asesoria clara y tiempos de respuesta rapidos.
-          </p>
-          <div class="stats">
-            <div>
-              <strong>98%</strong>
-              <span>Rapidez en la entrega</span>
-            </div>
-            <div>
-              <strong>96%</strong>
-              <span>Satisfaccion del cliente</span>
-            </div>
-            <div>
-              <strong>100%</strong>
-              <span>Calidad</span>
-            </div>
+      <div class="products-grid">
+        <article class="product-card" *ngFor="let product of filteredProducts">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.name">
+            <i class="fa" [class]="product.icon"></i>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section sedes">
-      <div class="sedes__bg"></div>
-      <div class="container sedes__content">
-        <div class="section-heading section-heading--light">
-          <p class="eyebrow">Sedes</p>
-          <h2>Encuentranos en puntos clave</h2>
-        </div>
-
-        <div class="cards sedes-grid">
-          <article class="sede-card">
-            <h3>Bogota - Quinta Paredes</h3>
-            <p>Atencion cercana para empresas, oficinas y eventos.</p>
-            <a href="https://wa.me/573007224142" target="_blank" rel="noreferrer">
+          <div class="product-info">
+            <span>{{ product.category }}</span>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <button type="button" (click)="openWhatsApp(product)">
               <i class="fa-brands fa-whatsapp"></i>
-              Escribir a la sede
-            </a>
-          </article>
-          <article class="sede-card">
-            <h3>Bogota - Ricaurte</h3>
-            <p>Soluciones rapidas para produccion, comercio y papelerias.</p>
-            <a href="https://wa.me/573027045280" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-whatsapp"></i>
-              Escribir a la sede
-            </a>
-          </article>
-          <article class="sede-card">
-            <h3>Medellin - Boston</h3>
-            <p>Acompanamiento para negocios y profesionales independientes.</p>
-            <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">
-              <i class="fa-brands fa-whatsapp"></i>
-              Escribir a la sede
-            </a>
-          </article>
-        </div>
+              Consultar por WhatsApp
+            </button>
+          </div>
+        </article>
       </div>
-    </section>
 
-    <section class="shipping-strip">
-      <div class="container">
-        <i class="fa fa-truck"></i>
-        <span>Hacemos envios a toda Colombia</span>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Posibilidades</p>
-          <h2>Un sello, infinitas posibilidades</h2>
-        </div>
-
-        <div class="cards possibilities-grid">
-          <article class="image-card">
-            <img src="assets/img/profesiones.jpg" alt="Sellos para diferentes profesiones">
-            <div>
-              <h3>Para profesiones</h3>
-              <p>Firmas, matriculas, aprobaciones y validaciones profesionales.</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/img/usos.jpg" alt="Usos empresariales para sellos">
-            <div>
-              <h3>Para multiples usos</h3>
-              <p>Marcacion documental, inventarios, empaques y procesos internos.</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/img/modelos.jpg" alt="Modelos de sellos automaticos y manuales">
-            <div>
-              <h3>En varios modelos</h3>
-              <p>Opciones manuales, automaticas, fechadoras y personalizadas.</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="contacto" class="section section--soft">
-      <div class="container contact">
-        <div class="contact__info">
-          <p class="eyebrow">Contacto</p>
-          <h2>Cotiza tu sello por WhatsApp</h2>
-          <p>
-            Cuentanos que necesitas y te responderemos con una opcion ajustada a tu negocio.
-          </p>
-          <ul>
-            <li><i class="fa fa-phone"></i> 304 615 9935</li>
-            <li><i class="fa fa-envelope"></i> ventas@nacionaldesellos.co</li>
-            <li><i class="fa fa-map-marker"></i> Bogota y Medellin</li>
-          </ul>
-        </div>
-
-        <form class="contact-form" (ngSubmit)="sendForm()">
-          <label>
-            Nombre
-            <input type="text" name="nombre" [(ngModel)]="contactForm.nombre" autocomplete="name">
-          </label>
-          <label>
-            Correo
-            <input type="email" name="correo" [(ngModel)]="contactForm.correo" autocomplete="email">
-          </label>
-          <label>
-            Telefono
-            <input type="tel" name="telefono" [(ngModel)]="contactForm.telefono" autocomplete="tel">
-          </label>
-          <label>
-            Mensaje
-            <textarea name="mensaje" rows="5" [(ngModel)]="contactForm.mensaje"></textarea>
-          </label>
-          <label class="checkbox">
-            <input type="checkbox" name="politica" [(ngModel)]="contactForm.politica">
-            <span>Acepto la politica de tratamiento de datos.</span>
-          </label>
-          <button class="btn btn--primary" type="submit">
-            <i class="fa-brands fa-whatsapp"></i>
-            Enviar por WhatsApp
-          </button>
-        </form>
-      </div>
+      <nav class="pagination" aria-label="Paginacion sellos">
+        <button type="button" [class.active]="currentPage === 1" (click)="goToPage(1)">1</button>
+        <button type="button" [class.active]="currentPage === 2" (click)="goToPage(2)">2</button>
+        <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
+          <i class="fa fa-arrow-right"></i>
+        </button>
+      </nav>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer__grid">
+  <section id="asesoria" class="advice-band">
+    <div class="stamps-container advice-grid">
       <div>
-        <img src="assets/img/logo-sellos-white.png" alt="Nacional de Sellos" class="footer__logo">
+        <p class="kicker">Asesoria</p>
+        <h2>Te ayudamos a definir texto, tamano y tipo de sello</h2>
+      </div>
+      <div class="advice-cards">
+        <div>
+          <strong>98%</strong>
+          <span>Rapidez en entrega</span>
+        </div>
+        <div>
+          <strong>96%</strong>
+          <span>Satisfaccion del cliente</span>
+        </div>
+        <div>
+          <strong>100%</strong>
+          <span>Calidad de marcacion</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contacto-sellos" class="stamps-footer">
+    <div class="stamps-container footer-grid">
+      <div>
+        <h3>UNIALRE Sellos</h3>
         <p>Sellos, insumos y personalizacion con cobertura nacional.</p>
       </div>
       <div>
-        <h3>Sedes</h3>
-        <p>Bogota - Quinta Paredes</p>
-        <p>Bogota - Ricaurte</p>
-        <p>Medellin - Boston</p>
+        <h3>Productos</h3>
+        <a routerLink="/sellos">Nuestros productos</a>
+        <a href="#asesoria">Asesoria</a>
       </div>
       <div>
         <h3>Contacto</h3>
@@ -309,16 +131,16 @@
       </div>
       <div>
         <h3>Redes</h3>
-        <div class="footer__social">
+        <div class="stamps-social">
           <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
         </div>
       </div>
     </div>
+    <div class="copyright">2026 UNIALRE Sellos © - Todos los derechos reservados.</div>
   </footer>
 
-  <a class="whatsapp-float" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+  <a class="stamps-whatsapp" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp sellos">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 </div>
