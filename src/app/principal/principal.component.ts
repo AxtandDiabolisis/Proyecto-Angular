@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { ContactService } from '../services/contact.service';
+
 @Component({
   selector: 'app-principal',
   standalone: true,
@@ -54,6 +56,8 @@ export class PrincipalComponent {
     politica: false
   };
 
+  constructor(private contactService: ContactService) {}
+
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
@@ -81,6 +85,22 @@ export class PrincipalComponent {
       window.alert('Por favor completa nombre, correo, telefono y acepta la politica de datos.');
       return;
     }
+
+    // Enviar a la API
+    this.contactService.sendContactMessage({
+      name: nombre,
+      email: correo,
+      phone: telefono,
+      message: mensaje,
+      source_page: 'principal'
+    }).subscribe({
+      next: () => {
+        console.log('Mensaje de contacto guardado en la API');
+      },
+      error: (error) => {
+        console.error('Error guardando mensaje de contacto', error);
+      }
+    });
 
     const text = [
       'Hola, quiero solicitar una cotizacion.',

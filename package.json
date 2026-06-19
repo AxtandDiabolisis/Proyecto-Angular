@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:api": "cd backend && .\\venv\\Scripts\\python -m uvicorn main:app --reload",
+    "start:all": "concurrently --names \"API,ANGULAR\" --prefix-colors \"yellow,cyan\" \"npm run start:api\" \"npm run start\"",
     "build": "ng build",
     "test": "ng test"
   },
@@ -23,6 +25,7 @@
     "@angular/build": "^21.0.0",
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
+    "concurrently": "^9.2.3",
     "typescript": "~5.9.0"
   }
 }

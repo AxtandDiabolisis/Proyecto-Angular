@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { MetricsService, MetricSummary } from '../services/metrics.service';
 
 interface PageMetric {
   name: string;
@@ -30,7 +32,7 @@ interface TrendMetric {
   templateUrl: './metricas.component.html',
   styleUrl: './metricas.component.css'
 })
-export class MetricasComponent {
+export class MetricasComponent implements OnInit {
   pageMetrics: PageMetric[] = [
     { name: 'Principal', route: '/', visits: 1840, clicks: 412, conversion: 22, color: '#2563eb' },
     { name: 'Sellos', route: '/sellos', visits: 1285, clicks: 368, conversion: 29, color: '#e31e24' },
@@ -38,14 +40,7 @@ export class MetricasComponent {
     { name: 'Ferreteria', route: '/ferreteria', visits: 1120, clicks: 301, conversion: 27, color: '#ffb000' }
   ];
 
-  productMetrics: ProductMetric[] = [
-    { name: 'Sello automatico empresarial', line: 'Sellos', clicks: 138, whatsapp: 42 },
-    { name: 'Sello fechador', line: 'Sellos', clicks: 101, whatsapp: 31 },
-    { name: 'Cobija Estrella', line: 'Lenceria', clicks: 96, whatsapp: 26 },
-    { name: 'Sabana Solo Tono-Casa Luna', line: 'Lenceria', clicks: 84, whatsapp: 22 },
-    { name: 'Taladros y rotomartillos', line: 'Ferreteria', clicks: 126, whatsapp: 39 },
-    { name: 'Llaves y copas', line: 'Ferreteria', clicks: 73, whatsapp: 18 }
-  ];
+  productMetrics: ProductMetric[] = [];
 
   visitTrend: TrendMetric[] = [
     { day: 'Lun', visits: 520 },
@@ -56,6 +51,45 @@ export class MetricasComponent {
     { day: 'Sab', visits: 780 },
     { day: 'Dom', visits: 610 }
   ];
+
+  constructor(private metricsService: MetricsService) {}
+
+  ngOnInit(): void {
+    this.loadMetrics();
+  }
+
+  loadMetrics(): void {
+    this.metricsService.getSummary().subscribe({
+      next: (summary: MetricSummary) => {
+        // Agrupar métricas por producto para calcular clicks y whatsapp
+        const productMap = new Map<string, { clicks: number; whatsapp: number; line: string }>();
+
+        for (const record of summary.records) {
+          if (!productMap.has(record.productName)) {
+            productMap.set(record.productName, { clicks: 0, whatsapp: 0, line: record.line });
+          }
+          const entry = productMap.get(record.productName)!;
+          entry.clicks++;
+          if (record.action === 'whatsapp') {
+            entry.whatsapp++;
+          }
+        }
+
+        this.productMetrics = Array.from(productMap.entries()).map(([name, data]) => ({
+          name,
+          line: data.line,
+          clicks: data.clicks,
+          whatsapp: data.whatsapp
+        }));
+
+        // Ordenar por clicks descendente, tomar top 6
+        this.productMetrics.sort((a, b) => b.clicks - a.clicks);
+      },
+      error: (error) => {
+        console.error('Error cargando métricas', error);
+      }
+    });
+  }
 
   get totalVisits(): number {
     return this.pageMetrics.reduce((total, metric) => total + metric.visits, 0);
