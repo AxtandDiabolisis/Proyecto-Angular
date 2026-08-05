@@ -272,11 +272,17 @@ a {
   line-height: 1.6;
 }
 
+.product-actions {
+  display: grid;
+  gap: 0.6rem;
+}
+
 .product-info button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
+  width: 100%;
   min-height: 44px;
   border: 0;
   border-radius: 999px;
@@ -285,6 +291,20 @@ a {
   cursor: pointer;
   font-weight: 900;
   padding: 0 1rem;
+  white-space: normal;
+  text-align: center;
+}
+
+.product-info button .cart-button-label {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.product-actions button:first-child {
+  background: #e31e24;
 }
 
 .product-info button:hover {

@@ -75,10 +75,18 @@
             <span>{{ product.category }}</span>
             <h3>{{ product.name }}</h3>
             <p>{{ product.description }}</p>
-            <button type="button" (click)="openWhatsApp(product.name)">
-              <i class="fa-brands fa-whatsapp"></i>
-              Consultar por WhatsApp
-            </button>
+            <div class="product-actions">
+              <button type="button" (click)="addToCart(product)">
+                <i class="fa fa-cart-plus"></i>
+                <strong class="cart-button-label">
+                  {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}
+                </strong>
+              </button>
+              <button type="button" (click)="openWhatsApp(product.name)">
+                <i class="fa-brands fa-whatsapp"></i>
+                Consultar por WhatsApp
+              </button>
+            </div>
           </div>
         </article>
       </div>

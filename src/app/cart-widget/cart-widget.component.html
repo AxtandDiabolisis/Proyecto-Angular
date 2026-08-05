@@ -1,0 +1,55 @@
+<ng-container *ngIf="cartService.items$ | async as items">
+  <button class="cart-toggle" type="button" aria-label="Abrir carrito de compras" (click)="toggleCart()">
+    <i class="fa fa-cart-shopping"></i>
+    <span *ngIf="cartService.totalItems">{{ cartService.totalItems }}</span>
+  </button>
+
+  <aside class="cart-panel" [class.cart-panel--open]="open" aria-label="Carrito de compras">
+    <div class="cart-heading">
+      <div>
+        <p>Carrito</p>
+        <h2>{{ cartService.totalItems }} producto{{ cartService.totalItems === 1 ? '' : 's' }}</h2>
+      </div>
+      <button type="button" aria-label="Cerrar carrito" (click)="toggleCart()">
+        <i class="fa fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="cart-empty" *ngIf="!items.length">
+      <i class="fa fa-bag-shopping"></i>
+      <p>Aun no has agregado productos.</p>
+    </div>
+
+    <div class="cart-items" *ngIf="items.length">
+      <article class="cart-item" *ngFor="let item of items">
+        <img [src]="item.image || 'assets/img/logo-sellos.png'" [alt]="item.name">
+        <div>
+          <strong>{{ item.name }}</strong>
+          <span>{{ item.line }} {{ item.price ? '· ' + item.price : '' }}</span>
+          <small *ngIf="cartService.getItemSubtotal(item)">
+            Subtotal: {{ cartService.formatCurrency(cartService.getItemSubtotal(item)) }}
+          </small>
+          <div class="quantity">
+            <button type="button" aria-label="Restar unidad" (click)="decrease(item)">-</button>
+            <b>Cantidad: {{ item.quantity }}</b>
+            <button type="button" aria-label="Sumar unidad" (click)="increase(item)">+</button>
+            <button class="remove" type="button" (click)="remove(item)">Quitar</button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="cart-actions" *ngIf="items.length">
+      <div class="cart-total">
+        <span>Total estimado</span>
+        <strong>{{ cartService.formatCurrency(cartService.totalPrice) }}</strong>
+        <small *ngIf="cartService.hasPricelessItems">Algunos productos no tienen precio definido.</small>
+      </div>
+      <button type="button" (click)="sendOrder()">
+        <i class="fa-brands fa-whatsapp"></i>
+        Cotizar carrito
+      </button>
+      <button class="clear" type="button" (click)="cartService.clear()">Vaciar</button>
+    </div>
+  </aside>
+</ng-container>

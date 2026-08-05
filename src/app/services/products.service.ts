@@ -10,6 +10,7 @@ export interface Product {
   image?: string;
   icon?: string;
   description?: string;
+  price?: string;
   whatsapp_message?: string;
 }
 

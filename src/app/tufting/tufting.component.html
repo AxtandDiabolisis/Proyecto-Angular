@@ -1,0 +1,148 @@
+<div class="tufting-page">
+  <div class="promo-strip">
+    <div class="tufting-container">
+      <span>Tufting personalizado para marcas, habitaciones y regalos</span>
+      <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Cotiza tu idea</a>
+    </div>
+  </div>
+
+  <header class="tufting-header">
+    <div class="tufting-container header-inner">
+      <a class="brand" routerLink="/" aria-label="UNIALRE Tufting">
+        <i class="fa fa-rug"></i>
+        <span>UNIALRE Tufting</span>
+      </a>
+
+      <nav class="tufting-nav" aria-label="Menu principal tufting">
+        <a href="#drops">Drops</a>
+        <a href="#categorias">Categorias</a>
+        <a href="#custom">Personaliza</a>
+        <a routerLink="/" class="back-link">UNIALRE</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="tufting-container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Textil custom club</p>
+          <h1>Tapetes con personalidad para espacios que no quieren verse igual</h1>
+          <p>
+            Creamos piezas tufting con colores vivos, formas atrevidas y acabados suaves
+            para habitaciones, estudios, vitrinas y marcas.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#drops">Ver drops</a>
+            <a class="btn btn-light" href="#custom">Crear mi diseño</a>
+          </div>
+        </div>
+
+        <div class="hero-card" aria-label="Producto destacado de tufting">
+          <span class="drop-tag">Nuevo</span>
+          <i class="fa fa-star"></i>
+          <h2>Custom Rug</h2>
+          <p>Tu logo, tu paleta, tu tamaño.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="categorias" class="section">
+      <div class="tufting-container">
+        <div class="section-heading">
+          <p class="eyebrow">Explora categorias</p>
+          <h2>Ideas listas para convertirlas en textura</h2>
+        </div>
+
+        <div class="category-grid">
+          <article *ngFor="let category of categories">
+            <i class="fa" [class]="category.icon"></i>
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.description }}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="drops" class="section section-dark">
+      <div class="tufting-container">
+        <div class="drop-heading">
+          <div>
+            <p class="eyebrow">Recien llegados</p>
+            <h2>Drops con vibra de estudio creativo</h2>
+          </div>
+          <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Pedir catalogo</a>
+        </div>
+
+        <div class="product-grid">
+          <article class="product-card" *ngFor="let product of products">
+            <div class="product-media">
+              <img [src]="product.image" [alt]="product.name">
+              <span>{{ product.badge }}</span>
+            </div>
+            <div class="product-info">
+              <small>{{ product.category }}</small>
+              <h3>{{ product.name }}</h3>
+              <strong>{{ product.price }}</strong>
+              <div class="product-actions">
+                <button type="button" (click)="addToCart(product)">
+                  <i class="fa fa-cart-plus"></i>
+                  <strong class="cart-button-label">
+                    {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar' }}
+                  </strong>
+                </button>
+                <button type="button" (click)="openWhatsApp(product.name)">
+                  <i class="fa-brands fa-whatsapp"></i>
+                  Compra rapida
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="custom" class="section custom-band">
+      <div class="tufting-container custom-grid">
+        <div>
+          <p class="eyebrow">Hazlo tuyo</p>
+          <h2>De una idea a una pieza suave, colorida y hecha a mano</h2>
+          <p>
+            Envíanos una referencia, logo, personaje o frase. Te ayudamos con tamaño,
+            colores y formato para que el resultado tenga presencia.
+          </p>
+        </div>
+        <div class="steps">
+          <article>
+            <span>01</span>
+            <h3>Idea</h3>
+            <p>Nos cuentas qué quieres crear.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Boceto</h3>
+            <p>Ajustamos color, forma y tamaño.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Tufting</h3>
+            <p>Producimos y coordinamos entrega.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <div class="tufting-container newsletter-inner">
+        <div>
+          <p class="eyebrow">Comunidad creativa</p>
+          <h2>Recibe nuevos drops y promos custom</h2>
+        </div>
+        <form>
+          <input type="email" placeholder="Tu email">
+          <button type="button">Registrarme</button>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>

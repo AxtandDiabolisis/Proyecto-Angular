@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { ProductsService, Product, Category } from '../services/products.service';
 import { MetricsService } from '../services/metrics.service';
+import { CartService } from '../services/cart.service';
 
 @Component({
   selector: 'app-lenceria',
@@ -23,7 +24,9 @@ export class LenceriaComponent implements OnInit {
 
   constructor(
     private productsService: ProductsService,
-    private metricsService: MetricsService
+    private metricsService: MetricsService,
+    private cartService: CartService,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +38,7 @@ export class LenceriaComponent implements OnInit {
     this.productsService.getCategories('Lenceria').subscribe({
       next: (response) => {
         this.categories = response;
+        this.changeDetectorRef.detectChanges();
       },
       error: (error) => {
         console.error('Error cargando categorías', error);
@@ -46,6 +50,7 @@ export class LenceriaComponent implements OnInit {
     this.productsService.getProducts('Lenceria', this.selectedCategory).subscribe({
       next: (response) => {
         this.products = response;
+        this.changeDetectorRef.detectChanges();
       },
       error: (error) => {
         console.error('Error cargando productos', error);
@@ -76,6 +81,37 @@ export class LenceriaComponent implements OnInit {
     }).subscribe({
       error: (error) => console.error('Error registrando métrica', error)
     });
+  }
+
+  addToCart(product: Product): void {
+    this.cartService.addItem({
+      id: this.cartId(product),
+      name: product.name,
+      line: this.productLine(product),
+      image: product.image,
+      price: product.price
+    });
+
+    this.metricsService.trackMetric({
+      product_id: product.id,
+      product_name: product.name,
+      line: product.line,
+      action: 'cart'
+    }).subscribe({
+      error: (error) => console.error('Error registrando mÃ©trica', error)
+    });
+  }
+
+  cartQuantity(product: Product): number {
+    return this.cartService.getQuantity(this.cartId(product));
+  }
+
+  private cartId(product: Product): string {
+    return `${this.productLine(product)}-${product.id ?? product.name}`;
+  }
+
+  private productLine(product: Product): string {
+    return product.line || 'Lenceria';
   }
 
   goToPage(page: number): void {
