@@ -65,8 +65,8 @@
       <div class="products-grid">
         <article class="product-card" *ngFor="let product of filteredProducts">
           <div class="product-image">
-            <img [src]="product.image" [alt]="product.name">
-            <i class="fa" [class]="product.icon"></i>
+            <img *ngIf="product.image" [src]="product.image" [alt]="product.name" (error)="hideBrokenImage(product)">
+            <i *ngIf="!product.image" class="fa" [class]="product.icon || 'fa-stamp'"></i>
           </div>
           <div class="product-info">
             <span>{{ product.category }}</span>

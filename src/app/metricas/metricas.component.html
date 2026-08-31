@@ -19,10 +19,10 @@
     <section class="hero">
       <div>
         <p class="eyebrow">Panel de analitica</p>
-        <h1>Metricas de visitas, productos y conversiones</h1>
+        <h1>Metricas reales de carrito, productos y conversiones</h1>
       </div>
       <div class="hero-actions">
-        <span>Datos demostrativos</span>
+        <span>{{ metricsLoadError ? 'API de metricas no disponible' : 'Datos reales del carrito y la API' }}</span>
         <button type="button" (click)="downloadExcel()">
           <i class="fa fa-file-excel"></i>
           Descargar Excel
@@ -33,40 +33,40 @@
     <section class="summary-grid" aria-label="Resumen general">
       <article>
         <i class="fa fa-eye"></i>
-        <span>Visitas totales</span>
-        <strong>{{ totalVisits }}</strong>
+        <span>Interacciones</span>
+        <strong>{{ totalInteractions }}</strong>
       </article>
       <article>
         <i class="fa fa-computer-mouse"></i>
-        <span>Clics totales</span>
+        <span>Clics carrito</span>
         <strong>{{ totalClicks }}</strong>
       </article>
       <article>
-        <i class="fa-brands fa-whatsapp"></i>
-        <span>Consultas WhatsApp</span>
-        <strong>{{ totalWhatsapp }}</strong>
+        <i class="fa fa-cart-shopping"></i>
+        <span>Productos en carrito</span>
+        <strong>{{ totalCartItems }}</strong>
       </article>
       <article>
-        <i class="fa fa-arrow-trend-up"></i>
-        <span>Conversion promedio</span>
-        <strong>{{ averageConversion }}%</strong>
+        <i class="fa fa-sack-dollar"></i>
+        <span>Valor carrito</span>
+        <strong>{{ formatCurrency(totalCartValue) }}</strong>
       </article>
     </section>
 
     <section class="charts-grid">
       <article class="panel">
         <div class="panel-heading">
-          <h2>Visitas por pantalla</h2>
-          <p>Comparativo de trafico por ruta.</p>
+          <h2>Actividad por pantalla</h2>
+          <p>Comparativo de clics, WhatsApp y carrito actual.</p>
         </div>
         <div class="bar-list">
           <div class="bar-row" *ngFor="let metric of pageMetrics">
             <div class="bar-label">
               <span>{{ metric.name }}</span>
-              <strong>{{ metric.visits }}</strong>
+              <strong>{{ metric.interactions }}</strong>
             </div>
             <div class="bar-track">
-              <div class="bar-fill" [style.width.%]="metric.visits / maxVisits * 100" [style.background]="metric.color"></div>
+              <div class="bar-fill" [style.width.%]="metric.interactions / maxInteractions * 100" [style.background]="metric.color"></div>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
       <article class="panel">
         <div class="panel-heading">
           <h2>Tendencia semanal</h2>
-          <p>Visitas por dia.</p>
+          <p>Interacciones registradas por dia.</p>
         </div>
         <div class="trend-chart">
           <div class="trend-column" *ngFor="let metric of visitTrend">
@@ -89,19 +89,20 @@
     <section class="charts-grid">
       <article class="panel">
         <div class="panel-heading">
-          <h2>Clics por producto</h2>
-          <p>Productos con mayor interes.</p>
+          <h2>Clics y carrito por producto</h2>
+          <p>Productos con mayor interes real.</p>
         </div>
         <div class="product-bars">
+          <p class="empty-state" *ngIf="!productMetrics.length">Aun no hay productos en el carrito ni metricas registradas.</p>
           <div class="product-row" *ngFor="let product of productMetrics">
             <div>
               <strong>{{ product.name }}</strong>
-              <span>{{ product.line }}</span>
+              <span>{{ product.line }} | Carrito: {{ product.cartQuantity }} | WhatsApp: {{ product.whatsapp }}</span>
             </div>
             <div class="mini-track">
-              <div class="mini-fill" [style.width.%]="product.clicks / maxProductClicks * 100"></div>
+              <div class="mini-fill" [style.width.%]="(product.clicks + product.cartQuantity) / maxProductClicks * 100"></div>
             </div>
-            <b>{{ product.clicks }}</b>
+            <b>{{ product.clicks + product.cartQuantity }}</b>
           </div>
         </div>
       </article>
@@ -109,27 +110,55 @@
       <article class="panel table-panel">
         <div class="panel-heading">
           <h2>Rendimiento por pantalla</h2>
-          <p>Visitas, clics y conversion.</p>
+          <p>Interacciones, clics y conversion.</p>
         </div>
         <table>
           <thead>
             <tr>
               <th>Pantalla</th>
-              <th>Visitas</th>
-              <th>Clics</th>
+              <th>Interacciones</th>
+              <th>Carrito</th>
+              <th>WhatsApp</th>
               <th>Conv.</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let metric of pageMetrics">
               <td>{{ metric.name }}</td>
-              <td>{{ metric.visits }}</td>
-              <td>{{ metric.clicks }}</td>
+              <td>{{ metric.interactions }}</td>
+              <td>{{ metric.cartItems }}</td>
+              <td>{{ metric.whatsapp }}</td>
               <td>{{ metric.conversion }}%</td>
             </tr>
           </tbody>
         </table>
       </article>
+    </section>
+
+    <section class="panel cart-panel">
+      <div class="panel-heading">
+        <h2>Carrito actual</h2>
+        <p>Productos agregados desde sellos, lenceria, ferreteria y tufting.</p>
+      </div>
+
+      <p class="empty-state" *ngIf="!cartItems.length">El carrito actual esta vacio.</p>
+
+      <div class="cart-list" *ngIf="cartItems.length">
+        <article *ngFor="let item of cartItems">
+          <img *ngIf="item.image" [src]="item.image" [alt]="item.name">
+          <div>
+            <strong>{{ item.name }}</strong>
+            <span>{{ item.line }} | {{ item.price || 'Sin precio' }}</span>
+          </div>
+          <b>{{ item.quantity }}</b>
+          <strong>{{ formatCurrency(cartSubtotal(item)) }}</strong>
+        </article>
+      </div>
+
+      <div class="cart-total" *ngIf="cartItems.length">
+        <span>Total carrito</span>
+        <strong>{{ formatCurrency(totalCartValue) }}</strong>
+      </div>
     </section>
   </main>
 </div>

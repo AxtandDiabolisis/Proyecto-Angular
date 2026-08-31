@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../services/cart.service';
+import { MetricsService } from '../services/metrics.service';
 
 interface TuftingCategory {
   name: string;
@@ -10,6 +11,7 @@ interface TuftingCategory {
 }
 
 interface TuftingProduct {
+  id: number;
   name: string;
   category: string;
   price: string;
@@ -33,17 +35,32 @@ export class TuftingComponent {
   ];
 
   products: TuftingProduct[] = [
-    { name: 'Tapete logo personalizado', category: 'Custom', price: 'Desde $120.000', image: 'assets/img/tufting/producto-logo.jpg', badge: 'Nuevo drop' },
-    { name: 'Wall art smile', category: 'Decoracion', price: 'Desde $95.000', image: 'assets/img/tufting/producto-smile.jpg', badge: 'Favorito' },
-    { name: 'Tapete iniciales', category: 'Regalos', price: 'Desde $85.000', image: 'assets/img/tufting/producto-iniciales.jpg', badge: 'Personalizable' },
-    { name: 'Mini rug color pop', category: 'Drops', price: 'Desde $70.000', image: 'assets/img/tufting/producto-color-pop.jpg', badge: 'Entrega rapida' }
+    { id: 1001, name: 'Tapete logo personalizado', category: 'Custom', price: 'Desde $120.000', image: 'assets/img/tufting/producto-logo.jpg', badge: 'Nuevo drop' },
+    { id: 1002, name: 'Wall art smile', category: 'Decoracion', price: 'Desde $95.000', image: 'assets/img/tufting/producto-smile.jpg', badge: 'Favorito' },
+    { id: 1003, name: 'Tapete iniciales', category: 'Regalos', price: 'Desde $85.000', image: 'assets/img/tufting/producto-iniciales.jpg', badge: 'Personalizable' },
+    { id: 1004, name: 'Mini rug color pop', category: 'Drops', price: 'Desde $70.000', image: 'assets/img/tufting/producto-color-pop.jpg', badge: 'Entrega rapida' }
   ];
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private metricsService: MetricsService
+  ) {}
 
   openWhatsApp(productName: string): void {
     const text = `Hola, quiero cotizar tufting personalizado: ${productName}`;
     window.open(`https://wa.me/573046159935?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+
+    const product = this.products.find((item) => item.name === productName);
+    if (product) {
+      this.metricsService.trackMetric({
+        product_id: product.id,
+        product_name: product.name,
+        line: 'Tufting',
+        action: 'whatsapp'
+      }).subscribe({
+        error: (error) => console.error('Error registrando metrica', error)
+      });
+    }
   }
 
   addToCart(product: TuftingProduct): void {
@@ -53,6 +70,15 @@ export class TuftingComponent {
       line: 'Tufting',
       image: product.image,
       price: product.price
+    });
+
+    this.metricsService.trackMetric({
+      product_id: product.id,
+      product_name: product.name,
+      line: 'Tufting',
+      action: 'cart'
+    }).subscribe({
+      error: (error) => console.error('Error registrando metrica', error)
     });
   }
 

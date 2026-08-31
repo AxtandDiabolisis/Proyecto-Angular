@@ -106,6 +106,11 @@ export class SellosComponent implements OnInit {
     return this.cartService.getQuantity(`${product.line}-${product.id}`);
   }
 
+  hideBrokenImage(product: Product): void {
+    product.image = undefined;
+    this.changeDetectorRef.detectChanges();
+  }
+
   goToPage(page: number): void {
     this.currentPage = page;
   }
