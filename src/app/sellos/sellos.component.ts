@@ -18,9 +18,12 @@ export class SellosComponent implements OnInit {
   selectedCategory = 'Todos';
   sortOption = 'latest';
   currentPage = 1;
+  readonly pageSize = 20;
 
   categories: Category[] = [];
   products: Product[] = [];
+  selectedImage?: Product;
+  private imageRetryByProduct = new Map<number, number>();
 
   constructor(
     private productsService: ProductsService,
@@ -49,6 +52,7 @@ export class SellosComponent implements OnInit {
   loadProducts(): void {
     this.productsService.getProducts('Sellos', this.selectedCategory).subscribe({
       next: (response) => {
+        this.imageRetryByProduct.clear();
         this.products = response;
         this.changeDetectorRef.detectChanges();
       },
@@ -59,7 +63,24 @@ export class SellosComponent implements OnInit {
   }
 
   get filteredProducts(): Product[] {
-    return this.products;
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.products.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.products.length / this.pageSize));
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }
+
+  get firstShownProduct(): number {
+    return this.products.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+  }
+
+  get lastShownProduct(): number {
+    return Math.min(this.currentPage * this.pageSize, this.products.length);
   }
 
   selectCategory(category: string): void {
@@ -107,11 +128,61 @@ export class SellosComponent implements OnInit {
   }
 
   hideBrokenImage(product: Product): void {
+    const nextImage = this.getNextImageFallback(product);
+
+    if (nextImage) {
+      product.image = nextImage;
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
     product.image = undefined;
     this.changeDetectorRef.detectChanges();
   }
 
+  openImagePreview(product: Product): void {
+    if (!product.image) {
+      return;
+    }
+
+    this.selectedImage = product;
+  }
+
+  closeImagePreview(): void {
+    this.selectedImage = undefined;
+  }
+
   goToPage(page: number): void {
-    this.currentPage = page;
+    this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
+  }
+
+  private extractDriveFileId(image: string): string | undefined {
+    const directImageMatch = image.match(/googleusercontent\.com\/d\/([^=/?&#]+)/);
+    const queryIdMatch = image.match(/[?&]id=([^&#]+)/);
+
+    return directImageMatch?.[1] || queryIdMatch?.[1];
+  }
+
+  private getNextImageFallback(product: Product): string | undefined {
+    if (!product.image) {
+      return undefined;
+    }
+
+    const fileId = this.extractDriveFileId(product.image);
+
+    if (!fileId) {
+      return undefined;
+    }
+
+    const candidates = [
+      `https://lh3.googleusercontent.com/d/${fileId}=w1000`,
+      `https://drive.google.com/uc?export=view&id=${fileId}`,
+      `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`
+    ].filter((candidate) => candidate !== product.image);
+
+    const retryCount = this.imageRetryByProduct.get(product.id) || 0;
+    this.imageRetryByProduct.set(product.id, retryCount + 1);
+
+    return candidates[retryCount];
   }
 }

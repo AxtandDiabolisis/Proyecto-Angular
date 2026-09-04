@@ -53,7 +53,7 @@
 
     <section class="products-area">
       <div class="products-toolbar">
-        <p>Mostrando {{ filteredProducts.length }} de {{ products.length }} resultados</p>
+        <p>Mostrando {{ firstShownProduct }}-{{ lastShownProduct }} de {{ products.length }} resultados</p>
         <select [(ngModel)]="sortOption" aria-label="Ordenar productos de sellos">
           <option value="popular">Ordenar por popularidad</option>
           <option value="latest">Ordenar por las ultimas</option>
@@ -65,7 +65,15 @@
       <div class="products-grid">
         <article class="product-card" *ngFor="let product of filteredProducts">
           <div class="product-image">
-            <img *ngIf="product.image" [src]="product.image" [alt]="product.name" (error)="hideBrokenImage(product)">
+            <button
+              *ngIf="product.image"
+              class="image-zoom-button"
+              type="button"
+              (click)="openImagePreview(product)"
+              [attr.aria-label]="'Ver imagen ampliada de ' + product.name"
+            >
+              <img [src]="product.image" [alt]="product.name" (error)="hideBrokenImage(product)">
+            </button>
             <i *ngIf="!product.image" class="fa" [class]="product.icon || 'fa-stamp'"></i>
           </div>
           <div class="product-info">
@@ -89,8 +97,14 @@
       </div>
 
       <nav class="pagination" aria-label="Paginacion sellos">
-        <button type="button" [class.active]="currentPage === 1" (click)="goToPage(1)">1</button>
-        <button type="button" [class.active]="currentPage === 2" (click)="goToPage(2)">2</button>
+        <button
+          *ngFor="let page of pages"
+          type="button"
+          [class.active]="currentPage === page"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
         <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
           <i class="fa fa-arrow-right"></i>
         </button>
@@ -151,4 +165,14 @@
   <a class="stamps-whatsapp" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp sellos">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
+
+  <div class="image-modal" *ngIf="selectedImage" role="dialog" aria-modal="true" [attr.aria-label]="'Imagen ampliada de ' + selectedImage.name" (click)="closeImagePreview()">
+    <div class="image-modal__content" (click)="$event.stopPropagation()">
+      <button class="image-modal__close" type="button" aria-label="Cerrar imagen ampliada" (click)="closeImagePreview()">
+        <i class="fa fa-xmark"></i>
+      </button>
+      <img [src]="selectedImage.image" [alt]="selectedImage.name">
+      <h3>{{ selectedImage.name }}</h3>
+    </div>
+  </div>
 </div>
