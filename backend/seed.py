@@ -115,7 +115,7 @@ products = [
         "name": "UNIALRE MP-3F ENTINTADA",
         "category": "Automaticos",
         "line": "Sellos",
-        "image": "https://drive.google.com/thumbnail?id=1aGO8JxAI0jtMUYT59p7NoeQdGaCEN8Nr&sz=w1000",
+        "image": "https://lh3.googleusercontent.com/d/1aGO8JxAI0jtMUYT59p7NoeQdGaCEN8Nr=w1000",
         "icon": "fa-stamp",
         "description": "Sello automatico entintado para marcacion practica y constante.",
         "whatsapp_message": "Hola, estoy interesado en el producto de sellos: UNIALRE MP-3F ENTINTADA"
