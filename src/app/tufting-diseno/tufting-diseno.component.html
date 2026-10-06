@@ -1,0 +1,81 @@
+<div class="design-page">
+  <header class="studio-header">
+    <a class="brand" routerLink="/tufting"><i class="fa-solid fa-rug" aria-hidden="true"></i><span>UNIALRE <b>Tufting</b></span></a>
+    <a class="return-link" routerLink="/tufting"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver al catalogo</a>
+  </header>
+
+  <main class="studio-main">
+    <div class="studio-heading">
+      <div><p class="eyebrow">Custom rug studio</p><h1>Diseña tu tapete</h1></div>
+      <div class="heading-actions">
+        <span class="save-state"><i class="fa-solid" [class.fa-check]="saved()" [class.fa-pen]="!saved()" aria-hidden="true"></i>{{ saved() ? 'Guardado en este navegador' : 'Boceto en edicion' }}</span>
+        <button type="button" class="icon-button" title="Guardar boceto en este navegador" aria-label="Guardar boceto en este navegador" (click)="saveDraft()" [disabled]="busy()"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i></button>
+        <button type="button" class="download-button" (click)="download()" [disabled]="busy()"><i class="fa-solid fa-download" aria-hidden="true"></i> Descargar PNG</button>
+      </div>
+    </div>
+
+    <div class="notice error" role="alert" *ngIf="error()"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><span>{{ error() }}</span><button class="icon-button" type="button" aria-label="Cerrar aviso" title="Cerrar aviso" (click)="error.set('')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+    <div class="notice" role="status" *ngIf="message()"><i class="fa-solid fa-check" aria-hidden="true"></i><span>{{ message() }}</span><button class="icon-button" type="button" aria-label="Cerrar mensaje" title="Cerrar mensaje" (click)="message.set('')"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div>
+
+    <div class="studio-layout">
+      <aside class="settings" aria-label="Opciones del tapete" [attr.inert]="busy() ? '' : null">
+        <div class="tabs" role="tablist" aria-label="Personalizacion" (keydown)="navigateTabs($event)">
+          <button type="button" id="rug-tab" role="tab" aria-controls="rug-panel" [attr.tabindex]="tab() === 'rug' ? 0 : -1" [attr.aria-selected]="tab() === 'rug'" [class.active]="tab() === 'rug'" (click)="tab.set('rug')"><i class="fa-solid fa-rug" aria-hidden="true"></i> Tapete</button>
+          <button type="button" id="art-tab" role="tab" aria-controls="art-panel" [attr.tabindex]="tab() === 'art' ? 0 : -1" [attr.aria-selected]="tab() === 'art'" [class.active]="tab() === 'art'" (click)="tab.set('art')"><i class="fa-solid fa-palette" aria-hidden="true"></i> Diseño</button>
+          <button type="button" id="details-tab" role="tab" aria-controls="details-panel" [attr.tabindex]="tab() === 'details' ? 0 : -1" [attr.aria-selected]="tab() === 'details'" [class.active]="tab() === 'details'" (click)="tab.set('details')"><i class="fa-solid fa-sliders" aria-hidden="true"></i> Detalles</button>
+        </div>
+
+        <div class="tab-content" id="rug-panel" role="tabpanel" aria-labelledby="rug-tab" *ngIf="tab() === 'rug'">
+          <fieldset><legend>Forma</legend><div class="shape-options"><button type="button" *ngFor="let shape of shapes" [class.chosen]="design().shape === shape.id" [attr.aria-pressed]="design().shape === shape.id" (click)="setSetting('shape', shape.id)"><i class="fa-solid" [ngClass]="shape.icon" aria-hidden="true"></i><span>{{ shape.name }}</span></button></div></fieldset>
+          <fieldset><legend>Medidas <span>cm</span></legend><div class="dimension-inputs"><label>{{ design().shape === 'circle' ? 'Diametro' : 'Ancho' }}<div class="unit-input"><input type="number" min="20" max="250" step="1" [value]="design().width" (change)="setDimension('width', $event)"><span>cm</span></div></label><label *ngIf="design().shape !== 'circle'">Alto<div class="unit-input"><input type="number" min="20" max="250" step="1" [value]="design().height" (change)="setDimension('height', $event)"><span>cm</span></div></label></div></fieldset>
+          <fieldset><legend>Diseño de base</legend><div class="pattern-options"><button type="button" *ngFor="let pattern of patterns" [class.chosen]="design().pattern === pattern.id" [attr.aria-pressed]="design().pattern === pattern.id" (click)="setSetting('pattern', pattern.id)"><span class="pattern-sample" [ngClass]="pattern.id" [style.--base]="design().baseColor" [style.--accent]="design().accentColor"></span><span>{{ pattern.name }}</span></button></div></fieldset>
+          <fieldset><legend>Colores de base</legend><label class="color-row">Color principal<input type="color" [ngModel]="design().baseColor" (ngModelChange)="setSetting('baseColor', $event)"></label><label class="color-row" *ngIf="design().pattern !== 'plain'">Color secundario<input type="color" [ngModel]="design().accentColor" (ngModelChange)="setSetting('accentColor', $event)"></label><div class="swatches"><button type="button" *ngFor="let swatch of palette" [style.background]="swatch.color" [class.swatch-selected]="design().baseColor === swatch.color" [attr.title]="swatch.name" [attr.aria-label]="'Color principal: ' + swatch.name" [attr.aria-pressed]="design().baseColor === swatch.color" (click)="setSetting('baseColor', swatch.color)"></button></div></fieldset>
+        </div>
+
+        <div class="tab-content" id="art-panel" role="tabpanel" aria-labelledby="art-tab" *ngIf="tab() === 'art'">
+          <fieldset><legend>Imagen o logo</legend><button type="button" class="upload-button" (click)="imageFile.click()"><i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Cargar imagen</button><input #imageFile type="file" accept="image/png,image/jpeg,image/webp" hidden (change)="uploadImage($event)"><small class="file-spec">PNG, JPG o WEBP · Hasta 10 MB</small></fieldset>
+          <fieldset><legend>Texto</legend><label class="sr-only" for="new-text">Texto del diseño</label><input id="new-text" type="text" maxlength="80" [ngModel]="textInput()" (ngModelChange)="textInput.set($event)" placeholder="Tu nombre, marca o frase"><div class="text-options"><label class="sr-only" for="text-font">Tipografia</label><select id="text-font" [ngModel]="textFont()" (ngModelChange)="textFont.set($event)"><option value="Arial">Moderna</option><option value="Georgia">Clasica</option><option value="Courier New">Retro</option></select><button type="button" class="icon-button" title="Añadir texto" aria-label="Añadir texto" [disabled]="!textInput().trim()" (click)="addText()"><i class="fa-solid fa-plus" aria-hidden="true"></i></button></div></fieldset>
+          <fieldset><legend>Motivos</legend><div class="motifs"><button class="icon-button" type="button" title="Añadir estrella" aria-label="Añadir estrella" (click)="addMotif('star')"><i class="fa-solid fa-star" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Añadir corazon" aria-label="Añadir corazon" (click)="addMotif('heart')"><i class="fa-solid fa-heart" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Añadir circulo" aria-label="Añadir circulo" (click)="addMotif('circle')"><i class="fa-solid fa-circle" aria-hidden="true"></i></button></div></fieldset>
+          <fieldset><legend>Trazo y elementos</legend><label class="color-row">Color<input type="color" [ngModel]="brushColor()" (ngModelChange)="brushColor.set($event); updateBrush()"></label><div class="swatches"><button type="button" *ngFor="let swatch of palette" [style.background]="swatch.color" [class.swatch-selected]="brushColor() === swatch.color" [attr.title]="swatch.name" [attr.aria-label]="'Color del trazo: ' + swatch.name" (click)="brushColor.set(swatch.color); updateBrush()"></button></div><label class="range-label" for="brush-size">Grosor <span>{{ brushSize() }}</span></label><input id="brush-size" type="range" min="4" max="70" [ngModel]="brushSize()" (ngModelChange)="brushSize.set(+$event); updateBrush()"><button type="button" class="secondary-button" [class.chosen]="tool() === 'draw'" [attr.aria-pressed]="tool() === 'draw'" (click)="setTool(tool() === 'draw' ? 'select' : 'draw')"><i class="fa-solid fa-pencil" aria-hidden="true"></i> {{ tool() === 'draw' ? 'Terminar trazo' : 'Dibujar' }}</button></fieldset>
+        </div>
+
+        <div class="tab-content" id="details-panel" role="tabpanel" aria-labelledby="details-tab" *ngIf="tab() === 'details'">
+          <fieldset><legend>Tu pieza</legend><label for="design-name">Nombre del diseño</label><input id="design-name" type="text" maxlength="60" [ngModel]="design().name" (ngModelChange)="setSetting('name', $event)"><label for="design-use">Uso</label><select id="design-use" [ngModel]="design().use" (ngModelChange)="setSetting('use', $event)"><option>Piso</option><option>Decoracion de pared</option><option>Regalo</option><option>Marca o negocio</option></select><label for="design-finish">Acabado preferido</label><select id="design-finish" [ngModel]="design().finish" (ngModelChange)="setSetting('finish', $event)"><option>Por definir</option><option>Pelo cortado</option><option>Bucle</option><option>Relieve / tallado</option></select></fieldset>
+          <fieldset><legend>Detalles para la cotizacion</legend><label class="sr-only" for="design-notes">Detalles adicionales</label><textarea id="design-notes" rows="5" maxlength="1000" placeholder="Colores de referencia, fecha deseada, material o ajustes especiales..." [ngModel]="design().notes" (ngModelChange)="setSetting('notes', $event)"></textarea></fieldset>
+        </div>
+      </aside>
+
+      <section class="workspace" aria-label="Boceto del tapete">
+        <div class="editor-toolbar" role="toolbar" aria-label="Herramientas de diseño">
+          <div class="toolbar-group"><button class="icon-button" type="button" title="Seleccionar y mover" aria-label="Seleccionar y mover" [class.active]="tool() === 'select'" [attr.aria-pressed]="tool() === 'select'" [disabled]="busy()" (click)="setTool('select')"><i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Dibujar" aria-label="Dibujar" [class.active]="tool() === 'draw'" [attr.aria-pressed]="tool() === 'draw'" [disabled]="busy()" (click)="tab.set('art'); setTool('draw')"><i class="fa-solid fa-pencil" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Añadir texto" aria-label="Añadir texto al lienzo" [disabled]="busy()" (click)="tab.set('art'); addText()"><i class="fa-solid fa-font" aria-hidden="true"></i></button></div>
+          <span class="toolbar-divider"></span>
+          <div class="toolbar-group"><button class="icon-button" type="button" title="Deshacer" aria-label="Deshacer" [disabled]="busy() || !canUndo()" (click)="undo()"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Rehacer" aria-label="Rehacer" [disabled]="busy() || !canRedo()" (click)="redo()"><i class="fa-solid fa-rotate-right" aria-hidden="true"></i></button></div>
+          <button class="icon-button reset-button" type="button" title="Nuevo boceto" aria-label="Nuevo boceto" [disabled]="busy()" (click)="openReset()"><i class="fa-solid fa-file-circle-plus" aria-hidden="true"></i></button>
+        </div>
+
+        <div class="canvas-stage" [class.loading]="busy()" [attr.aria-busy]="busy()">
+          <span class="stage-label">{{ design().name || 'Mi custom rug' }}</span>
+          <div #canvasHost class="canvas-host"><canvas #editorCanvas aria-label="Diseño del tapete" role="img"></canvas></div>
+          <span class="size-label">{{ design().width }} × {{ design().height }} cm</span>
+          <span class="loading-label" role="status" *ngIf="busy()">Preparando boceto...</span>
+        </div>
+
+        <div class="selection-bar" [attr.inert]="busy() ? '' : null">
+          <span>{{ selected() ? 'Elemento seleccionado' : objectCount() + ' elementos' }}</span>
+          <div class="selection-tools" *ngIf="selected()">
+            <label *ngIf="selectedText() !== null" class="sr-only" for="selected-text">Editar texto seleccionado</label><input *ngIf="selectedText() !== null" id="selected-text" type="text" maxlength="80" [ngModel]="selectedText()" (ngModelChange)="editSelectedText($event)">
+            <label *ngIf="colorEditable()" class="sr-only" for="selected-color">Color del elemento seleccionado</label><input *ngIf="colorEditable()" id="selected-color" type="color" title="Color del elemento" [ngModel]="selectedColor()" (ngModelChange)="changeSelectedColor($event)">
+            <button class="icon-button" type="button" title="Centrar elemento" aria-label="Centrar elemento" (click)="centerSelected()"><i class="fa-solid fa-crosshairs" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Traer hacia delante" aria-label="Traer hacia delante" (click)="bringForward()"><i class="fa-solid fa-layer-group" aria-hidden="true"></i></button><button class="icon-button" type="button" title="Duplicar elemento" aria-label="Duplicar elemento" (click)="duplicate()"><i class="fa-regular fa-copy" aria-hidden="true"></i></button><button class="icon-button delete-button" type="button" title="Eliminar elemento" aria-label="Eliminar elemento" (click)="removeSelected()"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
+          </div>
+        </div>
+
+        <div class="quote-summary"><div><strong>{{ design().width }} × {{ design().height }} cm</strong><span>{{ design().use }} · {{ design().finish }}</span></div><button type="button" class="quote-button" [disabled]="busy()" (click)="quote()"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Cotizar mi diseño <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></button></div>
+        <p class="quote-note">Precio, materiales y disponibilidad se confirman al cotizar. El boceto no se adjunta automaticamente a WhatsApp.</p>
+      </section>
+    </div>
+  </main>
+
+  <dialog #resetConfirm class="reset-dialog" aria-labelledby="reset-title">
+    <h2 id="reset-title">¿Empezar un nuevo boceto?</h2><p>Se reemplazara el boceto guardado en este navegador.</p><div><button type="button" class="secondary-button" autofocus (click)="resetConfirm.close()">Cancelar</button><button type="button" class="download-button" (click)="reset()">Nuevo boceto</button></div>
+  </dialog>
+</div>

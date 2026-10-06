@@ -1,22 +1,25 @@
 <div class="tufting-page">
   <div class="promo-strip">
     <div class="tufting-container">
-      <span>Tufting personalizado para marcas, habitaciones y regalos</span>
-      <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Cotiza tu idea</a>
+      <span><i class="fa-solid fa-star" aria-hidden="true"></i> Tu idea, hecha tufting</span>
+      <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Hablemos <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
     </div>
   </div>
 
-  <header class="tufting-header">
+  <header #tuftingHeader class="tufting-header">
     <div class="tufting-container header-inner">
+      <div class="header-brand-row">
       <a class="brand" routerLink="/" aria-label="UNIALRE Tufting">
         <i class="fa fa-rug"></i>
-        <span>UNIALRE Tufting</span>
+        <span>UNIALRE <b>Tufting</b></span>
       </a>
+      <app-cart-widget [inline]="true"></app-cart-widget>
+      </div>
 
       <nav class="tufting-nav" aria-label="Menu principal tufting">
-        <a href="#drops">Drops</a>
-        <a href="#categorias">Categorias</a>
-        <a href="#custom">Personaliza</a>
+        <a routerLink="/tufting" fragment="drops" [queryParams]="{ categoria: null }" queryParamsHandling="merge" [class.is-active]="currentSection() === 'drops'" (click)="openDrops()">Drops</a>
+        <a routerLink="/tufting" fragment="categorias" [class.is-active]="currentSection() === 'categorias'" (click)="scrollSection('categorias')">Categorias</a>
+        <a routerLink="/tufting/diseno" target="_blank" rel="noopener noreferrer">Personaliza</a>
         <a routerLink="/" class="back-link">UNIALRE</a>
       </nav>
     </div>
@@ -24,41 +27,42 @@
 
   <main>
     <section class="hero">
-      <div class="tufting-container hero-grid">
+      <picture class="hero-photo"><source media="(max-width: 760px)" srcset="assets/img/tufting/hero-custom-club-mobile-v2.png"><img src="assets/img/tufting/hero-custom-club.png" alt="Propuesta de estudio creativo con tapetes rosa y menta, wall art smile y un tapete de iniciales" fetchpriority="high"></picture>
+      <div class="tufting-container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Textil custom club</p>
-          <h1>Tapetes con personalidad para espacios que no quieren verse igual</h1>
-          <p>
-            Creamos piezas tufting con colores vivos, formas atrevidas y acabados suaves
-            para habitaciones, estudios, vitrinas y marcas.
-          </p>
+          <span class="studio-tag"><i class="fa-solid fa-asterisk" aria-hidden="true"></i> Custom rug club</span>
+          <h1>UNIALRE <span>Tufting</span></h1>
+          <p class="hero-motto">Tu espacio. Tu vibra.</p>
+          <p class="hero-description">Tapetes y wall art con tus colores, tus ideas y un monton de personalidad.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#drops">Ver drops</a>
-            <a class="btn btn-light" href="#custom">Crear mi diseño</a>
+            <a class="btn btn-primary" routerLink="/tufting" fragment="drops" [queryParams]="{ categoria: null }" queryParamsHandling="merge" (click)="openDrops()">Ver drops <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+            <a class="btn btn-light" routerLink="/tufting/diseno" target="_blank" rel="noopener noreferrer">Crear mi diseño <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></a>
           </div>
         </div>
 
-        <div class="hero-card" aria-label="Producto destacado de tufting">
-          <span class="drop-tag">Nuevo</span>
-          <i class="fa fa-star"></i>
-          <h2>Custom Rug</h2>
-          <p>Tu logo, tu paleta, tu tamaño.</p>
-        </div>
       </div>
+      <span class="hero-reference">Visual de referencia</span>
     </section>
+
+    <div class="club-strip" aria-hidden="true"><span>Tu idea</span><i class="fa-solid fa-asterisk"></i><span>Tu color</span><i class="fa-solid fa-asterisk"></i><span>Tu espacio</span><i class="fa-solid fa-asterisk"></i><span>Tufting club</span></div>
 
     <section id="categorias" class="section">
       <div class="tufting-container">
         <div class="section-heading">
-          <p class="eyebrow">Explora categorias</p>
-          <h2>Ideas listas para convertirlas en textura</h2>
+          <div><p class="eyebrow">01 / Elige tu universo</p><h2>Tufting para cada espacio</h2></div>
+          <span class="section-sticker"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Hecho para ti</span>
         </div>
 
         <div class="category-grid">
-          <article *ngFor="let category of categories">
-            <i class="fa" [class]="category.icon"></i>
+          <article *ngFor="let category of categories; let index = index" [class.category-active]="selectedCategory() === category.id">
+            <a routerLink="/tufting" fragment="drops" [queryParams]="{ categoria: category.id }" queryParamsHandling="merge" (click)="chooseCategory(category.id)">
+            <span class="category-number" aria-hidden="true">0{{ index + 1 }}</span>
+            <i class="fa-solid" [ngClass]="category.icon" aria-hidden="true"></i>
             <h3>{{ category.name }}</h3>
             <p>{{ category.description }}</p>
+            <small>{{ category.detail }}</small>
+            <span class="category-action">Ver diseños <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
           </article>
         </div>
       </div>
@@ -68,21 +72,37 @@
       <div class="tufting-container">
         <div class="drop-heading">
           <div>
-            <p class="eyebrow">Recien llegados</p>
-            <h2>Drops con vibra de estudio creativo</h2>
+            <p class="eyebrow">02 / Custom club · Drops</p>
+            <h2>Coleccion tufting</h2>
           </div>
-          <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Pedir catalogo</a>
+          <a href="https://wa.me/573046159935" target="_blank" rel="noreferrer">Pedir catalogo <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
         </div>
 
+        <p class="collection-note">Propuestas de diseño con imagenes de referencia. Medidas, materiales, precio final y disponibilidad se confirman al cotizar.</p>
+        <div class="catalog-controls">
+          <div class="category-filters" role="group" aria-label="Filtrar por categoria">
+            <button type="button" [class.selected]="selectedCategory() === 'all'" [attr.aria-pressed]="selectedCategory() === 'all'" (click)="filterCategory('all')">Todos <span>{{ products.length }}</span></button>
+            <button type="button" *ngFor="let category of categories" [class.selected]="selectedCategory() === category.id" [attr.aria-pressed]="selectedCategory() === category.id" (click)="filterCategory(category.id)">{{ category.name }} <span>{{ categoryCount(category.id) }}</span></button>
+          </div>
+          <div class="catalog-search">
+            <label class="search-box"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" aria-label="Buscar diseños de tufting" placeholder="Buscar diseño, nombre o idea" [ngModel]="search()" (ngModelChange)="search.set($event)"></label>
+            <label class="sort-box">Ordenar<select aria-label="Ordenar diseños" [ngModel]="sort()" (ngModelChange)="sort.set($event)"><option value="featured">Destacados</option><option value="price-asc">Menor precio base</option><option value="price-desc">Mayor precio base</option></select></label>
+          </div>
+        </div>
+        <p class="results-count" role="status" aria-live="polite">{{ selectedCategoryName() }} · {{ filteredProducts().length }} {{ filteredProducts().length === 1 ? 'diseño' : 'diseños' }}</p>
+
         <div class="product-grid">
-          <article class="product-card" *ngFor="let product of products">
-            <div class="product-media">
-              <img [src]="product.image" [alt]="product.name">
+          <article class="product-card" *ngFor="let product of filteredProducts()">
+            <button type="button" class="product-media" [attr.aria-label]="'Ver detalle de ' + product.name" (click)="showProduct(product)">
+              <img *ngIf="!failedImages().has(product.id)" [src]="product.image" [alt]="'Referencia de diseño: ' + product.name" loading="lazy" (error)="imageFailed(product.id)">
+              <small *ngIf="failedImages().has(product.id)" class="image-fallback">Imagen no disponible</small>
               <span>{{ product.badge }}</span>
-            </div>
+              <i class="fa-solid fa-expand expand-icon" aria-hidden="true"></i>
+            </button>
             <div class="product-info">
               <small>{{ product.category }}</small>
               <h3>{{ product.name }}</h3>
+              <p class="product-description">{{ product.description }}</p>
               <strong>{{ product.price }}</strong>
               <div class="product-actions">
                 <button type="button" (click)="addToCart(product)">
@@ -93,24 +113,26 @@
                 </button>
                 <button type="button" (click)="openWhatsApp(product.name)">
                   <i class="fa-brands fa-whatsapp"></i>
-                  Compra rapida
+                  Cotizar por WhatsApp
                 </button>
               </div>
             </div>
           </article>
         </div>
+        <div class="catalog-empty" *ngIf="!filteredProducts().length"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><h3>No encontramos ese diseño</h3><p>Prueba otro nombre o consulta todas las propuestas.</p><button type="button" class="btn btn-primary" (click)="clearFilters()">Ver todos los diseños</button></div>
       </div>
     </section>
 
     <section id="custom" class="section custom-band">
       <div class="tufting-container custom-grid">
         <div>
-          <p class="eyebrow">Hazlo tuyo</p>
-          <h2>De una idea a una pieza suave, colorida y hecha a mano</h2>
+          <p class="eyebrow">03 / Tu idea manda</p>
+          <h2>De tu cabeza<br>a tu espacio.</h2>
           <p>
             Envíanos una referencia, logo, personaje o frase. Te ayudamos con tamaño,
             colores y formato para que el resultado tenga presencia.
           </p>
+          <a class="btn btn-primary" routerLink="/tufting/diseno" target="_blank" rel="noopener noreferrer">Crear mi diseño <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>
         <div class="steps">
           <article>
@@ -132,17 +154,20 @@
       </div>
     </section>
 
-    <section class="newsletter">
-      <div class="tufting-container newsletter-inner">
-        <div>
-          <p class="eyebrow">Comunidad creativa</p>
-          <h2>Recibe nuevos drops y promos custom</h2>
-        </div>
-        <form>
-          <input type="email" placeholder="Tu email">
-          <button type="button">Registrarme</button>
-        </form>
+    <section class="studio-contact">
+      <div class="tufting-container contact-inner">
+        <div><p class="eyebrow">UNIALRE Tufting / Custom club</p><h2>¿Tienes una idea?<br>Hagamos algo unico.</h2></div>
+        <a class="btn btn-light" href="https://wa.me/573046159935?text=Hola%2C%20quiero%20hablar%20sobre%20una%20idea%20de%20tufting" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Hablar con el estudio <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       </div>
     </section>
   </main>
+  <footer class="studio-footer tufting-container"><span>UNIALRE Tufting</span><a routerLink="/principal">Volver a UNIALRE <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></footer>
+  <dialog #productDialog class="product-dialog" aria-labelledby="product-preview-title">
+    <button class="dialog-close" type="button" title="Cerrar detalle" aria-label="Cerrar detalle" (click)="productDialog.close()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    <div class="product-detail" *ngIf="preview() as product">
+      <img *ngIf="!failedImages().has(product.id)" [src]="product.image" [alt]="'Referencia de diseño: ' + product.name" (error)="imageFailed(product.id)">
+      <p *ngIf="failedImages().has(product.id)">Imagen no disponible</p>
+      <div><p class="eyebrow">{{ product.category }} · Diseño de referencia</p><h2 id="product-preview-title">{{ product.name }}</h2><p>{{ product.description }}</p><dl><dt>Uso sugerido</dt><dd>{{ product.use }}</dd><dt>Medidas y materiales</dt><dd>A confirmar en la cotizacion</dd></dl><strong>{{ product.price }}</strong><div class="product-actions"><button type="button" class="btn btn-primary" (click)="addToCart(product)"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}</button><button type="button" class="btn btn-light" (click)="openWhatsApp(product.name)"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Cotizar por WhatsApp</button><a class="design-link" routerLink="/tufting/diseno" target="_blank" rel="noopener noreferrer">Crear mi propio diseño <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div></div>
+    </div>
+  </dialog>
 </div>

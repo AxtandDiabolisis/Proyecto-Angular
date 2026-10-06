@@ -1,5 +1,5 @@
 <ng-container *ngIf="cartService.items$ | async as items">
-  <button class="cart-toggle" type="button" aria-label="Abrir carrito de compras" (click)="toggleCart()">
+  <button class="cart-toggle" [class.cart-toggle--inline]="inline" type="button" aria-label="Abrir carrito de compras" title="Abrir carrito de compras" (click)="toggleCart()">
     <i class="fa fa-cart-shopping"></i>
     <span *ngIf="cartService.totalItems">{{ cartService.totalItems }}</span>
   </button>

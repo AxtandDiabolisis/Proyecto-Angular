@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { CartItem, CartService } from '../services/cart.service';
 
@@ -11,6 +11,7 @@ import { CartItem, CartService } from '../services/cart.service';
   styleUrl: './cart-widget.component.css'
 })
 export class CartWidgetComponent {
+  @Input() inline = false;
   open = false;
 
   constructor(public cartService: CartService) {}

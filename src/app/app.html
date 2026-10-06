@@ -1,2 +1,4 @@
 <router-outlet></router-outlet>
-<app-cart-widget></app-cart-widget>
+@if (showCart()) {
+  <app-cart-widget></app-cart-widget>
+}
