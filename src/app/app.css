@@ -1,3 +1,58 @@
 :host {
   display: block;
 }
+
+.account-shortcuts {
+  position: fixed;
+  left: 18px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid #ded8d4;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 5px 20px #241b1724;
+}
+
+.account-shortcuts a,
+.account-shortcuts button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 38px;
+  min-height: 38px;
+  border: 0;
+  border-radius: 5px;
+  padding: 0 10px;
+  background: transparent;
+  color: #352d29;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.account-shortcuts a:hover,
+.account-shortcuts button:hover {
+  background: #f3eeeb;
+}
+
+.account-shortcuts a[href="/metricas"] {
+  background: #25201e;
+  color: #fff;
+}
+
+.account-shortcuts a[href="/metricas"]:hover {
+  background: #c82b31;
+}
+
+@media (max-width: 480px) {
+  .account-shortcuts { left: 10px; bottom: 12px; }
+  .account-shortcuts a { min-width: 38px; }
+  .account-shortcuts a span { display: none; }
+}

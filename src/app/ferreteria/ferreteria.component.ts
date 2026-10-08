@@ -6,11 +6,12 @@ import { RouterLink } from '@angular/router';
 import { ProductsService, Product, Category } from '../services/products.service';
 import { MetricsService } from '../services/metrics.service';
 import { CartService } from '../services/cart.service';
+import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
 
 @Component({
   selector: 'app-ferreteria',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ProductReviewsComponent],
   templateUrl: './ferreteria.component.html',
   styleUrl: './ferreteria.component.css'
 })
@@ -21,6 +22,7 @@ export class FerreteriaComponent implements OnInit {
 
   categories: Category[] = [];
   products: Product[] = [];
+  activeReviewProduct: Product | null = null;
 
   constructor(
     private productsService: ProductsService,
@@ -66,6 +68,10 @@ export class FerreteriaComponent implements OnInit {
     this.selectedCategory = category;
     this.currentPage = 1;
     this.loadProducts();
+  }
+
+  openReviews(product: Product): void {
+    this.activeReviewProduct = product;
   }
 
   openWhatsApp(productName: string): void {

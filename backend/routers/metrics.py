@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database import get_db
+from auth import require_admin
 from models import ProductMetric
 from schemas import MetricCreate
 
@@ -28,7 +29,7 @@ def track_metric(
 
 
 @router.get("/summary")
-def get_summary(db: Session = Depends(get_db)):
+def get_summary(db: Session = Depends(get_db), _admin=Depends(require_admin)):
     metrics = db.query(ProductMetric).all()
 
     total_clicks = len(metrics)

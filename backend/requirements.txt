@@ -3,3 +3,6 @@ uvicorn
 sqlalchemy
 pydantic
 python-dotenv
+PyJWT
+pwdlib[argon2]
+email-validator

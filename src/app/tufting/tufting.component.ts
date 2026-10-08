@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CartService } from '../services/cart.service';
 import { MetricsService } from '../services/metrics.service';
 import { CartWidgetComponent } from '../cart-widget/cart-widget.component';
+import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
 
 interface TuftingCategory {
   id: string;
@@ -30,7 +31,7 @@ interface TuftingProduct {
 @Component({
   selector: 'app-tufting',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CartWidgetComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CartWidgetComponent, ProductReviewsComponent],
   templateUrl: './tufting.component.html',
   styleUrls: ['./tufting.component.css']
 })
@@ -48,6 +49,7 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   readonly sort = signal('featured');
   readonly currentSection = signal('');
   readonly preview = signal<TuftingProduct | null>(null);
+  readonly reviewProduct = signal<TuftingProduct | null>(null);
   readonly failedImages = signal<Set<number>>(new Set());
   private readonly cartItems;
   categories: TuftingCategory[] = [
@@ -148,6 +150,10 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   showProduct(product: TuftingProduct): void {
     this.preview.set(product);
     this.productDialog.nativeElement.showModal();
+  }
+
+  showReviews(product: TuftingProduct): void {
+    this.reviewProduct.set(product);
   }
 
   imageFailed(id: number): void {

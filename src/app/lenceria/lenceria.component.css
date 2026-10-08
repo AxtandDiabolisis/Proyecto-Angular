@@ -287,6 +287,21 @@ a {
   text-align: center;
 }
 
+.product-info > .product-reviews-link {
+  justify-content: flex-start;
+  width: auto;
+  min-height: 34px;
+  margin: 0 0 0.8rem;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: #655b56;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.product-info > .product-reviews-link:hover { background: transparent; color: #b5537b; text-decoration: underline; }
+
 .product-info button .cart-button-label {
   color: #ffffff;
   font-size: 0.9rem;

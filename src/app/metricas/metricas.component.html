@@ -19,10 +19,10 @@
     <section class="hero">
       <div>
         <p class="eyebrow">Panel de analitica</p>
-        <h1>Metricas reales de carrito, productos y conversiones</h1>
+        <h1>Metricas de ventas, productos y opiniones</h1>
       </div>
       <div class="hero-actions">
-        <span>{{ metricsLoadError ? 'API de metricas no disponible' : 'Datos reales del carrito y la API' }}</span>
+        <span>{{ metricsLoadError || reviewsLoadError ? 'No se pudo cargar parte de las metricas' : 'Datos de carrito, actividad y opiniones' }}</span>
         <button type="button" (click)="downloadExcel()">
           <i class="fa fa-file-excel"></i>
           Descargar Excel
@@ -51,6 +51,75 @@
         <span>Valor carrito</span>
         <strong>{{ formatCurrency(totalCartValue) }}</strong>
       </article>
+      <article>
+        <i class="fa fa-comments"></i>
+        <span>Opiniones publicadas</span>
+        <strong>{{ reviewSummary.total_reviews }}</strong>
+      </article>
+      <article>
+        <i class="fa fa-star"></i>
+        <span>Calificacion promedio</span>
+        <strong *ngIf="reviewSummary.total_reviews; else noReviewAverage">{{ reviewSummary.average_rating | number:'1.1-1' }} / 5</strong>
+        <ng-template #noReviewAverage><strong>Sin datos</strong></ng-template>
+      </article>
+    </section>
+
+    <section class="reviews-grid" aria-label="Opiniones y calificaciones">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Distribucion de calificaciones</h2>
+          <p>{{ reviewsLoadError ? 'No se pudieron cargar las opiniones.' : 'Calificaciones recibidas por estrella.' }}</p>
+        </div>
+        <p class="empty-state" *ngIf="reviewsLoading">Cargando opiniones...</p>
+        <p class="empty-state" *ngIf="reviewsLoadError">No se pudieron cargar las calificaciones.</p>
+        <p class="empty-state" *ngIf="!reviewsLoading && !reviewsLoadError && !reviewSummary.total_reviews">Aun no hay opiniones publicadas.</p>
+        <div class="rating-bars" *ngIf="reviewSummary.total_reviews">
+          <div class="rating-row" *ngFor="let rating of ratingLevels">
+            <span>{{ rating }} <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+            <div class="bar-track"><div class="bar-fill" [style.width.%]="reviewCountForRating(rating) / maxReviewCount * 100"></div></div>
+            <strong>{{ reviewCountForRating(rating) }}</strong>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel table-panel">
+        <div class="panel-heading">
+          <h2>Calificacion por linea</h2>
+          <p>Promedio y cantidad de comentarios recibidos.</p>
+        </div>
+        <p class="empty-state" *ngIf="reviewsLoading">Cargando opiniones...</p>
+        <p class="empty-state" *ngIf="!reviewSummary.by_line.length && !reviewsLoadError && !reviewsLoading">Todavia no hay datos por linea.</p>
+        <table *ngIf="reviewSummary.by_line.length">
+          <thead><tr><th>Linea</th><th>Opiniones</th><th>Promedio</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let line of reviewSummary.by_line">
+              <td>{{ line.product_line }}</td>
+              <td>{{ line.total_reviews }}</td>
+              <td><i class="fa-solid fa-star rating-star" aria-hidden="true"></i> {{ line.average_rating | number:'1.1-1' }} / 5</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <section class="panel table-panel reviews-products-panel">
+      <div class="panel-heading">
+        <h2>Productos con mas opiniones</h2>
+        <p>Comentarios recibidos y calificacion promedio por producto.</p>
+      </div>
+      <p class="empty-state" *ngIf="reviewsLoading">Cargando opiniones...</p>
+      <p class="empty-state" *ngIf="!reviewSummary.by_product.length && !reviewsLoadError && !reviewsLoading">Aun no hay opiniones por producto.</p>
+      <table *ngIf="reviewSummary.by_product.length">
+        <thead><tr><th>Producto</th><th>Linea</th><th>Opiniones</th><th>Promedio</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let product of reviewSummary.by_product">
+            <td>{{ product.product_name }}</td>
+            <td>{{ product.product_line }}</td>
+            <td>{{ product.total_reviews }}</td>
+            <td><i class="fa-solid fa-star rating-star" aria-hidden="true"></i> {{ product.average_rating | number:'1.1-1' }} / 5</td>
+          </tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="charts-grid">

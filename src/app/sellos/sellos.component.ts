@@ -6,11 +6,12 @@ import { RouterLink } from '@angular/router';
 import { ProductsService, Product, Category } from '../services/products.service';
 import { MetricsService } from '../services/metrics.service';
 import { CartService } from '../services/cart.service';
+import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
 
 @Component({
   selector: 'app-sellos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ProductReviewsComponent],
   templateUrl: './sellos.component.html',
   styleUrl: './sellos.component.css'
 })
@@ -23,6 +24,7 @@ export class SellosComponent implements OnInit {
   categories: Category[] = [];
   products: Product[] = [];
   selectedImage?: Product;
+  activeReviewProduct: Product | null = null;
   private imageRetryByProduct = new Map<number, number>();
 
   constructor(
@@ -146,6 +148,10 @@ export class SellosComponent implements OnInit {
     }
 
     this.selectedImage = product;
+  }
+
+  openReviews(product: Product): void {
+    this.activeReviewProduct = product;
   }
 
   closeImagePreview(): void {

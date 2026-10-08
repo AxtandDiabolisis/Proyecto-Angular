@@ -1,0 +1,57 @@
+<main class="account-page">
+  <header class="account-header">
+    <a routerLink="/principal" class="account-brand"><i class="fa-solid fa-stamp" aria-hidden="true"></i> UNIALRE</a>
+    <a routerLink="/principal" class="back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Volver a la tienda</a>
+  </header>
+
+  <section class="account-content">
+    <div class="account-intro">
+      <p class="eyebrow">Tu espacio UNIALRE</p>
+      <h1>Una cuenta para estar más cerca.</h1>
+      <p>Accede a tu perfil o crea una cuenta para guardar tus datos de usuario.</p>
+      <div class="account-lines" aria-hidden="true"><span></span><span></span><span></span></div>
+    </div>
+
+    <section class="account-panel" *ngIf="auth.user() as user; else accessForm">
+      <p class="eyebrow">Perfil</p>
+      <h2>Hola, {{ user.name }}</h2>
+      <dl>
+        <div><dt>Correo</dt><dd>{{ user.email }}</dd></div>
+        <div><dt>Tipo de cuenta</dt><dd>{{ user.role === 'admin' ? 'Administrador' : 'Usuario' }}</dd></div>
+        <div><dt>Miembro desde</dt><dd>{{ user.created_at | date:'longDate' }}</dd></div>
+      </dl>
+      <a *ngIf="user.role === 'admin'" class="primary-action" routerLink="/metricas">
+        <i class="fa-solid fa-chart-line" aria-hidden="true"></i> Abrir métricas
+      </a>
+      <button class="secondary-action" type="button" (click)="signOut()">
+        <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Cerrar sesión
+      </button>
+    </section>
+
+    <ng-template #accessForm>
+      <section class="account-panel">
+        <div class="mode-switch" role="tablist" aria-label="Acceso a cuenta">
+          <button type="button" role="tab" [attr.aria-selected]="mode === 'login'" [class.active]="mode === 'login'" (click)="selectMode('login')">Iniciar sesión</button>
+          <button type="button" role="tab" [attr.aria-selected]="mode === 'register'" [class.active]="mode === 'register'" (click)="selectMode('register')">Crear cuenta</button>
+        </div>
+        <p class="eyebrow">{{ mode === 'login' ? 'Bienvenido de nuevo' : 'Registro de usuario' }}</p>
+        <h2>{{ mode === 'login' ? 'Ingresa a tu cuenta' : 'Crea tu perfil' }}</h2>
+
+        <form (ngSubmit)="submit()">
+          <label *ngIf="mode === 'register'" for="account-name">Nombre completo</label>
+          <input *ngIf="mode === 'register'" id="account-name" name="name" [(ngModel)]="name" required minlength="2" maxlength="100" autocomplete="name" placeholder="Tu nombre">
+          <label for="account-email">Correo electrónico</label>
+          <input id="account-email" name="email" type="email" [(ngModel)]="email" required maxlength="254" autocomplete="email" placeholder="nombre@correo.com">
+          <label for="account-password">Contraseña</label>
+          <input id="account-password" name="password" type="password" [(ngModel)]="password" required [minlength]="mode === 'register' ? 12 : 1" maxlength="128" [autocomplete]="mode === 'register' ? 'new-password' : 'current-password'" placeholder="••••••••••••">
+          <p *ngIf="mode === 'register'" class="password-hint">Usa al menos 12 caracteres. Las cuentas nuevas tienen acceso de usuario.</p>
+          <p *ngIf="errorMessage" class="form-error" role="alert">{{ errorMessage }}</p>
+          <button class="primary-action" type="submit" [disabled]="submitting">
+            <i class="fa-solid" [class.fa-right-to-bracket]="mode === 'login'" [class.fa-user-plus]="mode === 'register'" aria-hidden="true"></i>
+            {{ submitting ? 'Procesando...' : mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta' }}
+          </button>
+        </form>
+      </section>
+    </ng-template>
+  </section>
+</main>

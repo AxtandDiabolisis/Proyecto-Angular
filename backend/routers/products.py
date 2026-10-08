@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from database import get_db
+from auth import require_admin
 from models import Product
 from schemas import ProductCreate, ProductResponse
 
@@ -32,6 +33,7 @@ def get_products(
 @router.post("/", response_model=ProductResponse)
 def create_product(
     product: ProductCreate,
+    _admin=Depends(require_admin),
     db: Session = Depends(get_db)
 ):
     new_product = Product(**product.model_dump())

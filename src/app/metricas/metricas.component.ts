@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { CartItem, CartService } from '../services/cart.service';
 import { MetricRecord, MetricsService, MetricSummary } from '../services/metrics.service';
+import { ProductReviewsService, ProductReviewsAnalytics } from '../services/product-reviews.service';
 
 interface PageMetric {
   name: string;
@@ -51,6 +52,16 @@ export class MetricasComponent implements OnInit, OnDestroy {
   cartItems: CartItem[] = [];
   metricRecords: MetricRecord[] = [];
   metricsLoadError = false;
+  reviewsLoadError = false;
+  reviewsLoading = true;
+  reviewSummary: ProductReviewsAnalytics = {
+    total_reviews: 0,
+    average_rating: 0,
+    rating_distribution: [],
+    by_line: [],
+    by_product: []
+  };
+  readonly ratingLevels = [5, 4, 3, 2, 1];
 
   visitTrend: TrendMetric[] = [
     { day: 'Lun', visits: 0 },
@@ -66,7 +77,8 @@ export class MetricasComponent implements OnInit, OnDestroy {
 
   constructor(
     private metricsService: MetricsService,
-    private cartService: CartService
+    private cartService: CartService,
+    private productReviewsService: ProductReviewsService
   ) {}
 
   ngOnInit(): void {
@@ -76,6 +88,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
       this.rebuildDashboard();
     });
     this.loadMetrics();
+    this.loadReviewAnalytics();
   }
 
   ngOnDestroy(): void {
@@ -94,6 +107,22 @@ export class MetricasComponent implements OnInit, OnDestroy {
         this.metricsLoadError = true;
         console.error('Error cargando metricas', error);
         this.rebuildDashboard();
+      }
+    });
+  }
+
+  loadReviewAnalytics(): void {
+    this.reviewsLoadError = false;
+    this.reviewsLoading = true;
+    this.productReviewsService.getAnalytics().subscribe({
+      next: (summary) => {
+        this.reviewSummary = summary;
+        this.reviewsLoading = false;
+      },
+      error: (error) => {
+        this.reviewsLoadError = true;
+        this.reviewsLoading = false;
+        console.error('Error cargando metricas de opiniones', error);
       }
     });
   }
@@ -134,6 +163,14 @@ export class MetricasComponent implements OnInit, OnDestroy {
     return Math.max(1, ...this.productMetrics.map((metric) => metric.clicks + metric.cartQuantity));
   }
 
+  get maxReviewCount(): number {
+    return Math.max(1, ...this.reviewSummary.rating_distribution.map((item) => item.count));
+  }
+
+  reviewCountForRating(rating: number): number {
+    return this.reviewSummary.rating_distribution.find((item) => item.rating === rating)?.count ?? 0;
+  }
+
   formatCurrency(value: number): string {
     return this.cartService.formatCurrency(value);
   }
@@ -160,6 +197,8 @@ export class MetricasComponent implements OnInit, OnDestroy {
               <th>Valor carrito</th>
               <th>Consultas WhatsApp</th>
               <th>Conversion promedio</th>
+              <th>Opiniones</th>
+              <th>Calificacion promedio</th>
             </tr>
             <tr>
               <td>${this.totalInteractions}</td>
@@ -168,6 +207,8 @@ export class MetricasComponent implements OnInit, OnDestroy {
               <td>${this.formatCurrency(this.totalCartValue)}</td>
               <td>${this.totalWhatsapp}</td>
               <td>${this.averageConversion}%</td>
+              <td>${this.reviewSummary.total_reviews}</td>
+              <td>${this.reviewSummary.average_rating.toFixed(1)} / 5</td>
             </tr>
           </table>
 
@@ -193,6 +234,22 @@ export class MetricasComponent implements OnInit, OnDestroy {
                 <td>${metric.conversion}%</td>
               </tr>
             `).join('')}
+          </table>
+
+          <h2>Opiniones y calificaciones por linea</h2>
+          <table border="1">
+            <tr><th>Linea</th><th>Opiniones</th><th>Calificacion promedio</th></tr>
+            ${this.reviewSummary.by_line.map((line) =>
+              '<tr><td>' + line.product_line + '</td><td>' + line.total_reviews + '</td><td>' + line.average_rating + ' / 5</td></tr>'
+            ).join('')}
+          </table>
+
+          <h2>Opiniones y calificaciones por producto</h2>
+          <table border="1">
+            <tr><th>Producto</th><th>Linea</th><th>Opiniones</th><th>Calificacion promedio</th></tr>
+            ${this.reviewSummary.by_product.map((product) =>
+              '<tr><td>' + product.product_name + '</td><td>' + product.product_line + '</td><td>' + product.total_reviews + '</td><td>' + product.average_rating + ' / 5</td></tr>'
+            ).join('')}
           </table>
 
           <h2>Clics y carrito por producto</h2>

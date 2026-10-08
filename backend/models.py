@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from datetime import datetime
 
 from database import Base
@@ -39,3 +39,28 @@ class ContactMessage(Base):
     message = Column(String(1000), nullable=True)
     source_page = Column(String(100), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ProductReview(Base):
+    __tablename__ = "product_reviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    product_id = Column(Integer, nullable=False, index=True)
+    product_line = Column(String(100), nullable=False, index=True)
+    product_name = Column(String(200), nullable=False)
+    author = Column(String(100), nullable=False)
+    rating = Column(Integer, nullable=False)
+    comment = Column(String(1000), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(254), nullable=False, unique=True, index=True)
+    password_hash = Column(String(500), nullable=False)
+    role = Column(String(20), nullable=False, default="user")
+    is_active = Column(Boolean, nullable=False, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

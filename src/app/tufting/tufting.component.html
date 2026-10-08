@@ -104,6 +104,9 @@
               <h3>{{ product.name }}</h3>
               <p class="product-description">{{ product.description }}</p>
               <strong>{{ product.price }}</strong>
+              <button type="button" class="product-reviews-trigger" (click)="showReviews(product)">
+                <i class="fa-regular fa-star" aria-hidden="true"></i> Ver opiniones
+              </button>
               <div class="product-actions">
                 <button type="button" (click)="addToCart(product)">
                   <i class="fa fa-cart-plus"></i>
@@ -170,4 +173,5 @@
       <div><p class="eyebrow">{{ product.category }} · Diseño de referencia</p><h2 id="product-preview-title">{{ product.name }}</h2><p>{{ product.description }}</p><dl><dt>Uso sugerido</dt><dd>{{ product.use }}</dd><dt>Medidas y materiales</dt><dd>A confirmar en la cotizacion</dd></dl><strong>{{ product.price }}</strong><div class="product-actions"><button type="button" class="btn btn-primary" (click)="addToCart(product)"><i class="fa-solid fa-cart-plus" aria-hidden="true"></i> {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}</button><button type="button" class="btn btn-light" (click)="openWhatsApp(product.name)"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Cotizar por WhatsApp</button><a class="design-link" routerLink="/tufting/diseno" target="_blank" rel="noopener noreferrer">Crear mi propio diseño <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div></div>
     </div>
   </dialog>
+  <app-product-reviews *ngIf="reviewProduct() as product" [productId]="product.id" [productLine]="'Tufting'" [productName]="product.name" (closed)="reviewProduct.set(null)"></app-product-reviews>
 </div>

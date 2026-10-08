@@ -1,0 +1,52 @@
+<div class="review-backdrop" role="presentation" (click)="closed.emit()">
+  <section class="review-dialog" role="dialog" aria-modal="true" aria-labelledby="reviews-title" (click)="$event.stopPropagation()">
+    <button type="button" class="review-close" aria-label="Cerrar opiniones" (click)="closed.emit()"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    <p class="review-eyebrow">Opiniones del producto</p>
+    <h2 id="reviews-title">{{ productName }}</h2>
+
+    <div class="review-summary" *ngIf="summary() as data">
+      <span class="summary-score">{{ data.average_rating | number:'1.1-1' }}</span>
+      <span class="summary-stars" aria-label="Calificación promedio sobre cinco">
+        <i *ngFor="let star of stars" class="fa-star" [class.fa-solid]="star <= data.average_rating" [class.fa-regular]="star > data.average_rating" aria-hidden="true"></i>
+      </span>
+      <span>{{ data.total_reviews }} {{ data.total_reviews === 1 ? 'opinión' : 'opiniones' }}</span>
+    </div>
+
+    <p class="review-status" *ngIf="loading()">Cargando opiniones...</p>
+    <p class="review-status" *ngIf="error()" role="alert">{{ error() }}</p>
+    <p class="review-status review-success" *ngIf="success()" role="status">Tu opinión quedó publicada. ¡Gracias!</p>
+
+    <div class="review-list" *ngIf="!loading() && summary() as data">
+      <article class="review-item" *ngFor="let review of data.reviews">
+        <div class="review-item-heading">
+          <strong>{{ review.author }}</strong>
+          <time [dateTime]="review.created_at">{{ review.created_at | date:'mediumDate' }}</time>
+        </div>
+        <div class="review-item-stars" [attr.aria-label]="review.rating + ' de 5 estrellas'">
+          <i *ngFor="let star of stars" class="fa-star" [class.fa-solid]="star <= review.rating" [class.fa-regular]="star > review.rating" aria-hidden="true"></i>
+        </div>
+        <p>{{ review.comment }}</p>
+      </article>
+      <p class="review-empty" *ngIf="!data.reviews.length">Todavía no hay opiniones. Sé la primera persona en compartir la tuya.</p>
+    </div>
+
+    <form class="review-form" (ngSubmit)="submitReview()">
+      <h3>Deja tu opinión</h3>
+      <label class="rating-label">Tu calificación <span>Obligatoria, máximo 5 estrellas</span></label>
+      <div class="rating-picker" role="group" aria-label="Selecciona de una a cinco estrellas">
+        <button *ngFor="let star of stars" type="button" [attr.aria-label]="star + (star === 1 ? ' estrella' : ' estrellas')" [attr.aria-pressed]="star <= rating" (click)="rating = star">
+          <i class="fa-star" [class.fa-solid]="star <= rating" [class.fa-regular]="star > rating" aria-hidden="true"></i>
+        </button>
+        <span *ngIf="rating">{{ rating }} / 5</span>
+      </div>
+      <label for="review-author">Tu nombre</label>
+      <input id="review-author" name="author" [(ngModel)]="author" maxlength="100" required autocomplete="name" placeholder="¿Cómo te llamas?">
+      <label for="review-comment">Comentario</label>
+      <textarea id="review-comment" name="comment" [(ngModel)]="comment" maxlength="1000" required rows="3" placeholder="Cuéntanos qué te pareció este producto"></textarea>
+      <p class="public-note">Tu nombre y comentario serán visibles públicamente.</p>
+      <button class="review-submit" type="submit" [disabled]="submitting() || !author.trim() || !comment.trim() || rating < 1">
+        {{ submitting() ? 'Publicando...' : 'Publicar opinión' }}
+      </button>
+    </form>
+  </section>
+</div>

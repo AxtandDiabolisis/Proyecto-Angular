@@ -80,6 +80,9 @@
             <span>{{ product.category }}</span>
             <h3>{{ product.name }}</h3>
             <p>{{ product.description }}</p>
+            <button class="product-reviews-link" type="button" (click)="openReviews(product)">
+              <i class="fa-regular fa-star" aria-hidden="true"></i> Opiniones y calificación
+            </button>
             <div class="product-actions">
               <button type="button" (click)="addToCart(product)">
                 <i class="fa fa-cart-plus"></i>
@@ -175,4 +178,5 @@
       <h3>{{ selectedImage.name }}</h3>
     </div>
   </div>
+  <app-product-reviews *ngIf="activeReviewProduct as product" [productId]="product.id" [productLine]="product.line" [productName]="product.name" (closed)="activeReviewProduct = null"></app-product-reviews>
 </div>

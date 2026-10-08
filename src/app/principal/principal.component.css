@@ -452,7 +452,7 @@ a {
   inset: 0;
   background:
     linear-gradient(rgba(24, 24, 24, 0.86), rgba(24, 24, 24, 0.86)),
-    url('/assets/img/sedes-bg.jpg') center / cover no-repeat;
+    url('/assets/img/sede-tienda.jpg') center / cover no-repeat;
 }
 
 .sedes__content {

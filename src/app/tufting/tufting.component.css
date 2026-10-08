@@ -89,6 +89,8 @@ h1, .section-heading h2, .drop-heading h2, .custom-grid h2, .contact-inner h2 { 
 .product-info > .product-actions { margin-top: auto; }
 .product-info button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; min-height: 44px; border: 2px solid #24142f; border-radius: 6px; padding: 8px; background: #24142f; color: #fff; font-size: 12px; font-weight: 800; line-height: 1.3; }
 .product-info button .cart-button-label { font-size: 12px; margin: 0; }
+.product-info > .product-reviews-trigger { justify-content: flex-start; width: auto; min-height: 34px; margin: 0 0 10px; border: 0; padding: 0; background: transparent; color: #66566b; font-size: 12px; cursor: pointer; }
+.product-info > .product-reviews-trigger:hover { background: transparent; color: #9a2367; text-decoration: underline; }
 .product-actions button:first-child { background: #ff4fb8; color: #24142f; }
 .catalog-empty { padding: 48px 16px; text-align: center; }
 .catalog-empty > i { color: #68f2cf; font-size: 26px; }

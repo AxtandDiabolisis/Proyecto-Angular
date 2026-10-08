@@ -6,6 +6,7 @@
     "start": "ng serve",
     "start:api": "cd backend && .\\venv\\Scripts\\python -m uvicorn main:app --reload",
     "start:all": "concurrently --names \"API,ANGULAR\" --prefix-colors \"yellow,cyan\" \"npm run start:api\" \"npm run start\"",
+    "create:admin": "cd backend && .\\venv\\Scripts\\python create_admin.py",
     "build": "ng build",
     "test": "ng test"
   },
