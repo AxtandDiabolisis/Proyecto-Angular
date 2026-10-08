@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
 from database import Base, engine
-from routers import products, metrics, contact, reviews, auth
+from routers import products, metrics, contact, reviews, auth, content
 
 Base.metadata.create_all(bind=engine)
 
@@ -30,6 +32,8 @@ app.include_router(metrics.router)
 app.include_router(contact.router)
 app.include_router(reviews.router)
 app.include_router(auth.router)
+app.include_router(content.router)
+app.mount("/uploads", StaticFiles(directory=Path(__file__).parent / "uploads", check_dir=False), name="uploads")
 
 
 @app.get("/")

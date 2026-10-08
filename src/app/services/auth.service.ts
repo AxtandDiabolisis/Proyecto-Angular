@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, Subject, catchError, of, tap } from 'rxjs';
 
 export interface AccountUser {
   id: number;
@@ -30,9 +30,18 @@ export class AuthService {
   private readonly apiUrl = 'http://127.0.0.1:8000/auth';
   private readonly tokenKey = 'unialre_access_token';
   private readonly userKey = 'unialre_account';
+  private readonly logoutChannel?: BroadcastChannel;
+  readonly sessionEnded$ = new Subject<void>();
   readonly user = signal<AccountUser | null>(this.readUser());
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    if (typeof BroadcastChannel !== 'undefined') {
+      this.logoutChannel = new BroadcastChannel('unialre-auth');
+      this.logoutChannel.onmessage = (event: MessageEvent) => {
+        if (event.data === 'logout') this.clearSession(false);
+      };
+    }
+  }
 
   get token(): string | null {
     return typeof sessionStorage === 'undefined' ? null : sessionStorage.getItem(this.tokenKey);
@@ -64,11 +73,17 @@ export class AuthService {
   }
 
   logout(): void {
+    this.clearSession(true);
+  }
+
+  private clearSession(broadcast: boolean): void {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.removeItem(this.tokenKey);
       sessionStorage.removeItem(this.userKey);
     }
     this.user.set(null);
+    if (broadcast) this.logoutChannel?.postMessage('logout');
+    this.sessionEnded$.next();
   }
 
   private saveSession(session: AuthSession): void {

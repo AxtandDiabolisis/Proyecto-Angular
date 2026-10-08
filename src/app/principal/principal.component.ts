@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ContactService } from '../services/contact.service';
+import { SiteContentService } from '../services/site-content.service';
 
 @Component({
   selector: 'app-principal',
@@ -11,7 +12,7 @@ import { ContactService } from '../services/contact.service';
   templateUrl: './principal.component.html',
   styleUrl: './principal.component.css'
 })
-export class PrincipalComponent {
+export class PrincipalComponent implements OnInit {
   menuOpen = false;
   currentHeroSlide = 0;
 
@@ -48,6 +49,18 @@ export class PrincipalComponent {
     }
   ];
 
+  about = {
+    image: 'assets/img/profesiones.jpg',
+    title: 'Una empresa con varias lineas para resolver mejor',
+    text: 'Creamos y comercializamos productos para negocios, hogares y proyectos creativos con asesoria clara, calidad constante y tiempos de respuesta rapidos.'
+  };
+
+  possibilities = [
+    { title: 'Para negocios', text: 'Sellos, insumos y productos utiles para operaciones del dia a dia.', image: 'assets/img/profesiones.jpg' },
+    { title: 'Para el hogar', text: 'Lenceria, textiles y articulos pensados para espacios comodos.', image: 'assets/img/usos-hogar.jpg' },
+    { title: 'Para proyectos', text: 'Ferreteria, corte laser y tufting para crear, reparar y personalizar.', image: 'assets/img/modelos-proyectos.jpg' }
+  ];
+
   contactForm = {
     nombre: '',
     correo: '',
@@ -56,7 +69,18 @@ export class PrincipalComponent {
     politica: false
   };
 
-  constructor(private contactService: ContactService) {}
+  constructor(private contactService: ContactService, private contentService: SiteContentService) {}
+
+  ngOnInit(): void {
+    this.contentService.get<any>('homepage').subscribe({
+      next: ({ value }) => {
+        if (value?.slides?.length) this.heroSlides = this.heroSlides.map((slide, index) => ({ ...slide, ...(value.slides[index] || {}) }));
+        if (value?.about) this.about = { ...this.about, ...value.about };
+        if (value?.possibilities?.length) this.possibilities = this.possibilities.map((item, index) => ({ ...item, ...(value.possibilities[index] || {}) }));
+      },
+      error: () => undefined
+    });
+  }
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;

@@ -7,6 +7,7 @@ import { CartService } from '../services/cart.service';
 import { MetricsService } from '../services/metrics.service';
 import { CartWidgetComponent } from '../cart-widget/cart-widget.component';
 import { ProductReviewsComponent } from '../product-reviews/product-reviews.component';
+import { SiteContentService } from '../services/site-content.service';
 
 interface TuftingCategory {
   id: string;
@@ -51,6 +52,7 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   readonly preview = signal<TuftingProduct | null>(null);
   readonly reviewProduct = signal<TuftingProduct | null>(null);
   readonly failedImages = signal<Set<number>>(new Set());
+  private readonly productsRefresh = signal(0);
   private readonly cartItems;
   categories: TuftingCategory[] = [
     { id: 'custom', name: 'Tapetes custom', description: 'Tu logo, frase o idea convertida en una pieza para tu espacio.', icon: 'fa-rug', detail: 'Forma, colores y medidas a eleccion' },
@@ -67,6 +69,7 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   ];
 
   readonly filteredProducts = computed(() => {
+    this.productsRefresh();
     const query = this.normalize(this.search().trim());
     const items = this.products.filter((product) =>
       (this.selectedCategory() === 'all' || product.categoryId === this.selectedCategory())
@@ -82,8 +85,19 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private metricsService: MetricsService
+    private metricsService: MetricsService,
+    private contentService: SiteContentService
   ) {
+    this.contentService.get<Record<string, Partial<TuftingProduct>>>('tufting_products').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: ({ value }) => {
+        for (const product of this.products) {
+          const override = value[String(product.id)];
+          if (override) Object.assign(product, override);
+        }
+        this.productsRefresh.update((revision) => revision + 1);
+      },
+      error: () => undefined
+    });
     this.cartItems = toSignal(this.cartService.items$, { initialValue: this.cartService.items });
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const category = params.get('categoria');

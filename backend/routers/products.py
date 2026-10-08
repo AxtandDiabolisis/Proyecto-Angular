@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
 
 from database import get_db
 from auth import require_admin
 from models import Product
-from schemas import ProductCreate, ProductResponse
+from schemas import ProductCreate, ProductResponse, ProductUpdate
 
 router = APIRouter(
     prefix="/products",
@@ -70,3 +70,26 @@ def get_categories(
         })
 
     return response
+
+
+@router.patch("/{product_id}", response_model=ProductResponse)
+def update_product(
+    product_id: int,
+    changes: ProductUpdate,
+    db: Session = Depends(get_db),
+    _admin=Depends(require_admin),
+):
+    product = db.query(Product).filter(Product.id == product_id).first()
+    if product is None:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+    for field, value in changes.model_dump(exclude_unset=True).items():
+        if isinstance(value, str):
+            value = value.strip()
+        if field == "name" and not value:
+            raise HTTPException(status_code=422, detail="El nombre del producto no puede quedar vacio")
+        setattr(product, field, value)
+
+    db.commit()
+    db.refresh(product)
+    return product

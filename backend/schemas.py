@@ -87,3 +87,18 @@ class AuthSession(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = Field(default=None, min_length=1, max_length=200)
+    image: Optional[str] = Field(default=None, max_length=1000)
+    description: Optional[str] = Field(default=None, max_length=2000)
+
+
+class SiteContentUpdate(BaseModel):
+    value: dict
+
+
+class ImageUpload(BaseModel):
+    content_type: str
+    data_base64: str = Field(max_length=5_600_000)

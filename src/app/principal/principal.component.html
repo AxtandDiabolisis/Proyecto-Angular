@@ -152,14 +152,13 @@
     <section id="nosotros" class="section section--soft">
       <div class="container about">
         <div class="about__image">
-          <img src="assets/img/profesiones.jpg" alt="Sellos, tintas y papelería para negocios">
+          <img [src]="about.image" alt="Imagen de la empresa">
         </div>
         <div class="about__content">
           <p class="eyebrow">Nosotros</p>
-          <h2>Una empresa con varias lineas para resolver mejor</h2>
+          <h2>{{ about.title }}</h2>
           <p>
-            Creamos y comercializamos productos para negocios, hogares y proyectos
-            creativos con asesoria clara, calidad constante y tiempos de respuesta rapidos.
+            {{ about.text }}
           </p>
           <div class="stats">
             <div>
@@ -231,25 +230,11 @@
         </div>
 
         <div class="cards possibilities-grid">
-          <article class="image-card">
-            <img src="assets/img/profesiones.jpg" alt="Sellos, tinta y papelería reunidos para atender las necesidades de un negocio">
+          <article class="image-card" *ngFor="let item of possibilities">
+            <img [src]="item.image" [alt]="item.title">
             <div>
-              <h3>Para negocios</h3>
-              <p>Sellos, insumos y productos utiles para operaciones del dia a dia.</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/img/usos-hogar.jpg" alt="Textiles suaves y ropa de cama para el hogar">
-            <div>
-              <h3>Para el hogar</h3>
-              <p>Lenceria, textiles y articulos pensados para espacios comodos.</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/img/modelos-proyectos.jpg" alt="Herramientas, tufting y materiales para proyectos creativos">
-            <div>
-              <h3>Para proyectos</h3>
-              <p>Ferreteria, corte laser y tufting para crear, reparar y personalizar.</p>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.text }}</p>
             </div>
           </article>
         </div>

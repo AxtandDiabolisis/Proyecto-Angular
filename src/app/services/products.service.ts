@@ -50,4 +50,8 @@ export class ProductsService {
 
     return this.http.get<Category[]>(`${this.apiUrl}/categories`, { params });
   }
+
+  updateProduct(id: number, changes: Pick<Product, 'name' | 'description' | 'image'>): Observable<Product> {
+    return this.http.patch<Product>(`${this.apiUrl}/${id}`, changes);
+  }
 }

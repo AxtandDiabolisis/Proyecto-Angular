@@ -42,12 +42,14 @@
   background: #f3eeeb;
 }
 
-.account-shortcuts a[href="/metricas"] {
+.account-shortcuts a[href="/metricas"],
+.account-shortcuts a[href="/administracion"] {
   background: #25201e;
   color: #fff;
 }
 
-.account-shortcuts a[href="/metricas"]:hover {
+.account-shortcuts a[href="/metricas"]:hover,
+.account-shortcuts a[href="/administracion"]:hover {
   background: #c82b31;
 }
 

@@ -1,0 +1,67 @@
+<main class="admin-page">
+  <header class="admin-header">
+    <a routerLink="/principal" class="brand">UNIALRE <span>Administracion</span></a>
+    <nav><a routerLink="/metricas">Metricas</a><a routerLink="/principal">Ver tienda</a></nav>
+  </header>
+  <section class="admin-main">
+    <div class="page-title"><div><p class="eyebrow">Contenido del sitio</p><h1>Administrar tienda</h1></div></div>
+    <div class="tabs" role="tablist">
+      <button type="button" [class.active]="activeTab === 'products'" (click)="activeTab = 'products'">Productos</button>
+      <button type="button" [class.active]="activeTab === 'homepage'" (click)="activeTab = 'homepage'">Pagina principal</button>
+    </div>
+    <p class="notice success" *ngIf="message" role="status">{{ message }}</p>
+    <p class="notice error" *ngIf="error" role="alert">{{ error }}</p>
+
+    <section *ngIf="activeTab === 'products'" class="editor-section">
+      <div class="toolbar"><label>Linea de productos <select [(ngModel)]="selectedLine" (ngModelChange)="loadProducts()"><option *ngFor="let line of lines" [value]="line">{{ line }}</option><option value="Tufting">Tufting</option></select></label></div>
+      <div *ngIf="selectedLine !== 'Tufting'; else tuftingEditor" class="product-list">
+        <article class="product-editor" *ngFor="let product of products">
+          <img class="product-preview" [src]="product.image || 'assets/img/logo-sellos.png'" [alt]="product.name">
+          <div class="product-fields">
+            <p class="category">{{ product.category }}</p>
+            <label>Nombre<input [(ngModel)]="product.name" maxlength="200"></label>
+            <label>Descripcion<textarea [(ngModel)]="product.description" rows="3" maxlength="2000"></textarea></label>
+            <div class="image-row"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="uploadProduct($event, product)"></label><button type="button" class="save-button" (click)="saveProduct(product)" [disabled]="saving">Guardar producto</button></div>
+          </div>
+        </article>
+        <p *ngIf="!products.length" class="empty">No se encontraron productos en esta linea.</p>
+      </div>
+      <ng-template #tuftingEditor>
+        <div class="product-list">
+          <article class="product-editor" *ngFor="let id of ['1001','1002','1003','1004']">
+            <img class="product-preview" [src]="tuftingProducts[id]?.image || defaultTuftingImage(id)" [alt]="tuftingProducts[id]?.name || 'Producto Tufting'">
+            <div class="product-fields">
+              <p class="category">Producto {{ id }}</p>
+              <label>Nombre<input [(ngModel)]="tuftingProducts[id].name" maxlength="200"></label>
+              <label>Descripcion<textarea [(ngModel)]="tuftingProducts[id].description" rows="3" maxlength="2000"></textarea></label>
+              <div class="image-row"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, tuftingProducts[id], 'image')"></label><button type="button" class="save-button" (click)="saveTufting()">Guardar Tufting</button></div>
+            </div>
+          </article>
+        </div>
+      </ng-template>
+    </section>
+
+    <section *ngIf="activeTab === 'homepage'" class="editor-section">
+      <section class="content-group"><h2>Carrusel principal</h2>
+        <article class="content-editor" *ngFor="let slide of homepage.slides; let i = index">
+          <h3>Diapositiva {{ i + 1 }}</h3><div class="content-grid">
+            <label>Texto superior<input [(ngModel)]="slide.eyebrow"></label><label>Titulo<input [(ngModel)]="slide.title"></label>
+            <label class="wide">Descripcion<textarea [(ngModel)]="slide.text" rows="2"></textarea></label>
+            <label>Texto boton principal<input [(ngModel)]="slide.primaryLabel"></label><label>Enlace boton principal<input [(ngModel)]="slide.primaryLink"></label>
+            <label>Texto boton secundario<input [(ngModel)]="slide.secondaryLabel"></label><label>Enlace boton secundario<input [(ngModel)]="slide.secondaryLink"></label>
+            <div class="wide image-row"><img class="small-preview" [src]="slide.image" alt="Vista previa"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, slide, 'image')"></label></div>
+          </div>
+        </article>
+      </section>
+      <section class="content-group"><h2>Bloque Nosotros</h2><div class="content-grid">
+        <label>Titulo<input [(ngModel)]="homepage.about.title"></label><label class="wide">Descripcion<textarea [(ngModel)]="homepage.about.text" rows="3"></textarea></label>
+        <div class="wide image-row"><img class="small-preview" [src]="homepage.about.image" alt="Vista previa Nosotros"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, homepage.about, 'image')"></label></div>
+      </div></section>
+      <section class="content-group"><h2>Tarjetas de posibilidades</h2><article class="content-editor" *ngFor="let item of homepage.possibilities; let i = index"><h3>Tarjeta {{ i + 1 }}</h3><div class="content-grid">
+        <label>Titulo<input [(ngModel)]="item.title"></label><label>Descripcion<textarea [(ngModel)]="item.text" rows="2"></textarea></label>
+        <div class="wide image-row"><img class="small-preview" [src]="item.image" [alt]="item.title"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, item, 'image')"></label></div>
+      </div></article></section>
+      <button class="save-button save-home" type="button" (click)="saveHomepage()">Guardar cambios de portada</button>
+    </section>
+  </section>
+</main>

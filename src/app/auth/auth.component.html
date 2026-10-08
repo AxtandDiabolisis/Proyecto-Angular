@@ -23,6 +23,9 @@
       <a *ngIf="user.role === 'admin'" class="primary-action" routerLink="/metricas">
         <i class="fa-solid fa-chart-line" aria-hidden="true"></i> Abrir métricas
       </a>
+      <a *ngIf="user.role === 'admin'" class="primary-action" routerLink="/administracion">
+        <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i> Administrar contenido
+      </a>
       <button class="secondary-action" type="button" (click)="signOut()">
         <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i> Cerrar sesión
       </button>

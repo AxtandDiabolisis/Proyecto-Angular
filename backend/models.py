@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String, DateTime, JSON
 from datetime import datetime
 
 from database import Base
@@ -64,3 +64,12 @@ class User(Base):
     role = Column(String(20), nullable=False, default="user")
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+
+class SiteContent(Base):
+    __tablename__ = "site_content"
+
+    key = Column(String(80), primary_key=True)
+    value = Column(JSON, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    updated_by = Column(Integer, nullable=False)

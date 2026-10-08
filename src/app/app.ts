@@ -24,6 +24,12 @@ export class App {
 
   constructor() {
     this.auth.refreshProfile().subscribe();
+    this.auth.sessionEnded$.subscribe(() => {
+      const currentPath = this.router.url.split('?')[0].split('#')[0];
+      if (currentPath === '/metricas' || currentPath === '/administracion') {
+        void this.router.navigateByUrl('/cuenta');
+      }
+    });
   }
 
   signOut(): void {
