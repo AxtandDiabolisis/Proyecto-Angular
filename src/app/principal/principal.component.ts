@@ -43,7 +43,7 @@ export class PrincipalComponent implements OnInit {
       text: 'Explora productos para el hogar, herramientas para tus proyectos y piezas textiles personalizadas.',
       image: 'assets/img/modelos-proyectos.jpg',
       primaryLabel: 'Hablar por WhatsApp',
-      primaryLink: 'https://wa.me/573046159935',
+      primaryLink: 'https://wa.me/573124986325',
       secondaryLabel: 'Ver lineas',
       secondaryLink: '#servicios'
     }
@@ -136,6 +136,6 @@ export class PrincipalComponent implements OnInit {
       .filter(Boolean)
       .join('\n');
 
-    window.open(`https://wa.me/573046159935?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
   }
 }

@@ -22,7 +22,7 @@
 
     <div class="cart-items" *ngIf="items.length">
       <article class="cart-item" *ngFor="let item of items">
-        <img [src]="item.image || 'assets/img/logo-sellos.png'" [alt]="item.name">
+        <img [src]="item.image || 'assets/img/logo-unialre-2026.png'" [alt]="item.name">
         <div>
           <strong>{{ item.name }}</strong>
           <span>{{ item.line }} {{ item.price ? '· ' + item.price : '' }}</span>

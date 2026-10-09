@@ -14,6 +14,7 @@ class Product(Base):
     image = Column(String(300), nullable=True)
     icon = Column(String(100), nullable=True)
     description = Column(String(500), nullable=True)
+    price = Column(String(100), nullable=True)
     whatsapp_message = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 

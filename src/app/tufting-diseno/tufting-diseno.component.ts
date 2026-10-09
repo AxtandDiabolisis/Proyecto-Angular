@@ -358,7 +358,7 @@ export class TuftingDisenoComponent implements AfterViewInit, OnDestroy {
       d.notes.trim() ? `Detalles: ${d.notes.trim()}` : '',
       'Adjuntare el boceto descargado para que revisen el diseno y confirmen el precio.'
     ].filter(Boolean).join('\n');
-    window.open(`https://wa.me/573046159935?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
   }
 
   private addObject(object: FabricObject): void {

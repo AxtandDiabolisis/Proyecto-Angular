@@ -86,6 +86,8 @@ def update_product(
     for field, value in changes.model_dump(exclude_unset=True).items():
         if isinstance(value, str):
             value = value.strip()
+            if field == "price" and not value:
+                value = None
         if field == "name" and not value:
             raise HTTPException(status_code=422, detail="El nombre del producto no puede quedar vacio")
         setattr(product, field, value)

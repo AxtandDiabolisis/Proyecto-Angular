@@ -44,9 +44,10 @@ a {
 }
 
 .lency-logo img {
-  width: 72px;
-  height: 56px;
+  width: 184px;
+  height: 61px;
   object-fit: contain;
+  object-position: center;
 }
 
 .lency-nav {

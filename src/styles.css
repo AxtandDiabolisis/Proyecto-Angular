@@ -9,6 +9,24 @@
   box-sizing: border-box;
 }
 
+.corporate-logo {
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  background: #fff;
+}
+
+.admin-header .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-header .brand img {
+  width: 190px;
+  height: 62px;
+}
+
 html,
 body {
   min-height: 100%;

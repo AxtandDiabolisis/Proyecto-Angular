@@ -1,30 +1,33 @@
 <main class="admin-page">
   <header class="admin-header">
-    <a routerLink="/principal" class="brand">UNIALRE <span>Administracion</span></a>
+    <a routerLink="/principal" class="brand"><img class="corporate-logo" src="assets/img/logo-unialre-2026.png" alt="Universal de Altos Relieves S.A.S."><span>Administracion</span></a>
     <nav><a routerLink="/metricas">Metricas</a><a routerLink="/principal">Ver tienda</a></nav>
   </header>
   <section class="admin-main">
     <div class="page-title"><div><p class="eyebrow">Contenido del sitio</p><h1>Administrar tienda</h1></div></div>
     <div class="tabs" role="tablist">
-      <button type="button" [class.active]="activeTab === 'products'" (click)="activeTab = 'products'">Productos</button>
+      <button type="button" [class.active]="activeTab === 'products'" (click)="openProductsTab()">Productos</button>
       <button type="button" [class.active]="activeTab === 'homepage'" (click)="activeTab = 'homepage'">Pagina principal</button>
     </div>
     <p class="notice success" *ngIf="message" role="status">{{ message }}</p>
     <p class="notice error" *ngIf="error" role="alert">{{ error }}</p>
 
     <section *ngIf="activeTab === 'products'" class="editor-section">
-      <div class="toolbar"><label>Linea de productos <select [(ngModel)]="selectedLine" (ngModelChange)="loadProducts()"><option *ngFor="let line of lines" [value]="line">{{ line }}</option><option value="Tufting">Tufting</option></select></label></div>
-      <div *ngIf="selectedLine !== 'Tufting'; else tuftingEditor" class="product-list">
+      <div class="toolbar"><label>Linea de productos <select [ngModel]="selectedLine" (ngModelChange)="changeLine($event)"><option *ngFor="let line of lines" [value]="line">{{ line }}</option><option value="Tufting">Tufting</option></select></label></div>
+      <div *ngIf="selectedLine !== 'Tufting'; else tuftingEditor" class="product-list" [attr.aria-busy]="productsLoading">
+        <p *ngIf="productsLoading" class="empty" role="status">Cargando productos...</p>
+        <button *ngIf="productsLoadError && !productsLoading" type="button" class="save-button" (click)="loadProducts()">Reintentar carga</button>
         <article class="product-editor" *ngFor="let product of products">
-          <img class="product-preview" [src]="product.image || 'assets/img/logo-sellos.png'" [alt]="product.name">
+          <img class="product-preview" [src]="product.image || 'assets/img/logo-unialre-2026.png'" [alt]="product.name">
           <div class="product-fields">
             <p class="category">{{ product.category }}</p>
             <label>Nombre<input [(ngModel)]="product.name" maxlength="200"></label>
+            <label class="price-field">Precio del producto (COP)<input type="text" [(ngModel)]="product.price" maxlength="100" placeholder="Ej.: $25.000 o Desde $120.000"><small>Deja el campo vacio para quitar el precio o escribe "Cotizar".</small></label>
             <label>Descripcion<textarea [(ngModel)]="product.description" rows="3" maxlength="2000"></textarea></label>
             <div class="image-row"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="uploadProduct($event, product)"></label><button type="button" class="save-button" (click)="saveProduct(product)" [disabled]="saving">Guardar producto</button></div>
           </div>
         </article>
-        <p *ngIf="!products.length" class="empty">No se encontraron productos en esta linea.</p>
+        <p *ngIf="!productsLoading && !products.length && !error" class="empty">No se encontraron productos en esta linea.</p>
       </div>
       <ng-template #tuftingEditor>
         <div class="product-list">
@@ -33,6 +36,7 @@
             <div class="product-fields">
               <p class="category">Producto {{ id }}</p>
               <label>Nombre<input [(ngModel)]="tuftingProducts[id].name" maxlength="200"></label>
+              <label class="price-field">Precio del producto (COP)<input type="text" [(ngModel)]="tuftingProducts[id].price" maxlength="100" placeholder="Ej.: Desde $120.000 o Cotizar"><small>Deja el campo vacio para quitar el precio o escribe "Cotizar".</small></label>
               <label>Descripcion<textarea [(ngModel)]="tuftingProducts[id].description" rows="3" maxlength="2000"></textarea></label>
               <div class="image-row"><label class="file-button">Cambiar foto<input type="file" accept="image/jpeg,image/png,image/webp" (change)="upload($event, tuftingProducts[id], 'image')"></label><button type="button" class="save-button" (click)="saveTufting()">Guardar Tufting</button></div>
             </div>

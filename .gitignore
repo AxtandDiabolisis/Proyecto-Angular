@@ -32,7 +32,14 @@ Thumbs.db
 
 # Local project understanding files
 /entendimiento/
+/.env
+/.env.*
+!/.env.example
+/secrets/
+/backups/
 /backend/.env
 /backend/.env.*
 !/backend/.env.example
+/backend/*.db
+/backend/*.db-*
 /backend/uploads/

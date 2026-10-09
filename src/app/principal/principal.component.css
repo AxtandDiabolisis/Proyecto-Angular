@@ -60,9 +60,10 @@ a {
 
 .brand img {
   display: block;
-  width: 180px;
-  max-height: 58px;
+  width: 205px;
+  height: 68px;
   object-fit: contain;
+  object-position: center;
 }
 
 .nav-menu {
@@ -411,7 +412,7 @@ a {
   width: 100%;
   min-height: 460px;
   border-radius: 28px;
-  object-fit: cover;
+  object-fit: contain;
   box-shadow: 0 22px 55px rgba(24, 24, 24, 0.14);
 }
 
@@ -592,9 +593,14 @@ a {
 }
 
 .footer__logo {
-  width: 190px;
-  max-height: 64px;
-  object-fit: contain;
+  width: 230px;
+  height: 76px;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+  border: 5px solid #fff;
+  border-radius: 4px;
+  background: #fff;
   margin-bottom: 1rem;
 }
 

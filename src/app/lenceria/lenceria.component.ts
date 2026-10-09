@@ -76,7 +76,7 @@ export class LenceriaComponent implements OnInit {
 
   openWhatsApp(product: Product): void {
     const message = product.whatsapp_message || `Hola, estoy interesado en el producto: ${product.name}`;
-    window.open(`https://wa.me/573203109797?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
 
     // Registrar métrica
     this.metricsService.trackMetric({

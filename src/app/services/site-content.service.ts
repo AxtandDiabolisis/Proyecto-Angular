@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE_URL } from './api-url';
 
 export interface SiteContentResponse<T> {
   key: string;
-  value: T;
-  updated_at: string;
+  value: T | null;
+  updated_at: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
 export class SiteContentService {
-  private readonly apiUrl = 'http://127.0.0.1:8000/content';
+  private readonly apiUrl = API_BASE_URL + '/content';
 
   constructor(private readonly http: HttpClient) {}
 

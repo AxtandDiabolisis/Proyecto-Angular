@@ -29,7 +29,7 @@ def get_site_content(key: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Contenido no encontrado")
     item = db.query(SiteContent).filter(SiteContent.key == key).first()
     if item is None:
-        raise HTTPException(status_code=404, detail="Aun no hay contenido personalizado")
+        return {"key": key, "value": None, "updated_at": None}
     return {"key": item.key, "value": item.value, "updated_at": item.updated_at}
 
 

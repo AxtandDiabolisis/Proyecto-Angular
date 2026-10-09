@@ -93,7 +93,7 @@ export class SellosComponent implements OnInit {
 
   openWhatsApp(product: Product): void {
     const text = product.whatsapp_message || `Hola, estoy interesado en el producto de sellos: ${product.name}`;
-    window.open(`https://wa.me/573046159935?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
 
     // Registrar métrica
     this.metricsService.trackMetric({

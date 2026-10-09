@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE_URL } from './api-url';
 
 export interface ProductReview {
   id: number;
@@ -49,7 +50,7 @@ export interface ProductReviewsAnalytics {
 
 @Injectable({ providedIn: 'root' })
 export class ProductReviewsService {
-  private readonly apiUrl = 'http://127.0.0.1:8000/products';
+  private readonly apiUrl = API_BASE_URL + '/products';
 
   constructor(private http: HttpClient) {}
 

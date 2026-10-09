@@ -12,8 +12,7 @@ button { cursor: pointer; }
 .header-inner { justify-content: space-between; min-height: 76px; gap: 24px; }
 .header-brand-row { gap: 24px; }
 .brand { gap: 10px; font-size: 17px; font-weight: 900; }
-.brand b { display: block; font-weight: 500; font-size: 12px; margin-top: 3px; }
-.brand > i { display: grid; place-items: center; width: 42px; height: 42px; border: 2px solid #24142f; border-radius: 6px; background: #ff4fb8; box-shadow: 3px 3px 0 #24142f; }
+.brand img { width: 108px; height: 108px; object-fit: contain; object-position: center; border-radius: 4px; }
 .tufting-nav { gap: 24px; font-size: 13px; font-weight: 800; }
 .tufting-nav a { padding: 8px 0; }
 .tufting-nav a:hover, .tufting-nav .is-active { color: #9a2367; text-decoration: underline; text-underline-offset: 7px; }
@@ -140,7 +139,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .header-brand-row { width: 100%; justify-content: space-between; }
   .tufting-nav { width: 100%; justify-content: space-between; gap: 10px; font-size: 11px; }
   .brand { font-size: 14px; }
-  .brand b { display: inline; font-size: inherit; }
+  .brand img { width: 84px; height: 84px; }
   .brand > i { width: 34px; height: 34px; }
   .hero { height: min(520px, calc(100svh - 300px)); min-height: 380px; }
   .hero-inner { align-items: flex-start; }

@@ -44,6 +44,6 @@ export class CartWidgetComponent {
       .join('\n');
     const message = `Hola, quiero cotizar estos productos:\n${detail}`;
 
-    window.open(`https://wa.me/573046159935?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   }
 }

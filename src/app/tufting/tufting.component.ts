@@ -62,7 +62,7 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   ];
 
   products: TuftingProduct[] = [
-    { id: 1001, name: 'Tapete logo personalizado', category: 'Custom', categoryId: 'custom', price: 'Desde $120.000', image: 'assets/img/tufting/producto-logo.png', badge: 'A tu medida', description: 'Una pieza con la identidad de tu marca o tu idea favorita. El diseño, los colores y la forma se ajustan durante la cotizacion.', use: 'Piso, estudio o negocio' },
+    { id: 1001, name: 'Tapete logo personalizado', category: 'Custom', categoryId: 'custom', price: 'Desde $120.000', image: 'assets/img/tufting/producto-logo-madeja.png', badge: 'A tu medida', description: 'Una pieza con la identidad de tu marca o tu idea favorita. El diseño, los colores y la forma se ajustan durante la cotizacion.', use: 'Piso, estudio o negocio' },
     { id: 1002, name: 'Wall art smile', category: 'Wall art', categoryId: 'wall', price: 'Desde $95.000', image: 'assets/img/tufting/producto-smile.png', badge: 'Para pared', description: 'Una cara sonriente y bloques de color para una pared con personalidad. Consulta el formato y las opciones de montaje.', use: 'Decoracion de pared' },
     { id: 1003, name: 'Tapete iniciales', category: 'Regalos', categoryId: 'gifts', price: 'Desde $85.000', image: 'assets/img/tufting/producto-iniciales.png', badge: 'Personalizable', description: 'Iniciales, nombres y una paleta elegida por ti. Una propuesta de regalo que puedes adaptar a la persona y a su espacio.', use: 'Regalo o decoracion' },
     { id: 1004, name: 'Mini rug color pop', category: 'Drops', categoryId: 'drops', price: 'Desde $70.000', image: 'assets/img/tufting/producto-color-pop.png', badge: 'Coleccion', description: 'Un diseño ajedrez en rosa y menta para un acento de color. Consulta medidas, disponibilidad y adaptaciones para escritorio.', use: 'Escritorio o rincon decorativo' }
@@ -90,8 +90,9 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   ) {
     this.contentService.get<Record<string, Partial<TuftingProduct>>>('tufting_products').pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ value }) => {
+        const overrides = value || {};
         for (const product of this.products) {
-          const override = value[String(product.id)];
+          const override = overrides[String(product.id)];
           if (override) Object.assign(product, override);
         }
         this.productsRefresh.update((revision) => revision + 1);
@@ -184,7 +185,7 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
 
   openWhatsApp(productName: string): void {
     const text = `Hola, quiero cotizar tufting personalizado: ${productName}`;
-    window.open(`https://wa.me/573046159935?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
 
     const product = this.products.find((item) => item.name === productName);
     if (product) {

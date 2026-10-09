@@ -6,7 +6,7 @@ export interface CartItem {
   name: string;
   line: string;
   image?: string;
-  price?: string;
+  price?: string | null;
   quantity: number;
 }
 
@@ -111,7 +111,7 @@ export class CartService {
     }
   }
 
-  private parsePrice(price?: string): number {
+  private parsePrice(price?: string | null): number {
     if (!price) {
       return 0;
     }

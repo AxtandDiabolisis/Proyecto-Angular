@@ -3,7 +3,7 @@
 .account-header { display: flex; align-items: center; justify-content: space-between; min-height: 76px; padding: 0 max(24px, calc((100% - 1120px) / 2)); border-bottom: 1px solid #e9e3df; background: #fff; }
 .account-brand, .back-link { display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; font-weight: 800; }
 .account-brand { font-size: 18px; }
-.account-brand i { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 6px; background: #e31e24; color: #fff; }
+.account-brand img { width: 196px; height: 64px; object-fit: contain; object-position: center; }
 .back-link { color: #6a625e; font-size: 13px; }
 .account-content { display: grid; grid-template-columns: minmax(0, 1fr) minmax(360px, 460px); align-items: center; gap: clamp(36px, 8vw, 100px); width: min(1120px, calc(100% - 48px)); min-height: calc(100vh - 76px); margin: auto; padding: 64px 0; }
 .account-intro { max-width: 520px; }

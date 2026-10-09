@@ -44,9 +44,10 @@ a {
 }
 
 .stamps-logo img {
-  width: 72px;
-  height: 56px;
+  width: 194px;
+  height: 64px;
   object-fit: contain;
+  object-position: center;
 }
 
 .stamps-nav {

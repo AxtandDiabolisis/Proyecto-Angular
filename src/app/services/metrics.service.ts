@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE_URL } from './api-url';
 
 export interface MetricData {
   product_id: number;
@@ -27,7 +28,7 @@ export interface MetricRecord {
   providedIn: 'root'
 })
 export class MetricsService {
-  private readonly apiUrl = 'http://127.0.0.1:8000/metrics';
+  private readonly apiUrl = API_BASE_URL + '/metrics';
 
   constructor(private http: HttpClient) {}
 

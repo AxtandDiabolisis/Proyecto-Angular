@@ -1,6 +1,17 @@
-from pydantic import BaseModel, EmailStr, Field
+import re
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional
 from datetime import datetime
+
+
+def validate_price_value(value):
+    if value is None or not value.strip():
+        return None
+    normalized = value.strip()
+    if not re.fullmatch(r"(?:Desde\s+)?(?:\$\s*)?\d+(?:[.,]\d{3})*|Consultar precio|Cotizar", normalized, flags=re.IGNORECASE):
+        raise ValueError("Usa un precio no negativo, 'Desde $...' o 'Consultar precio'")
+    return normalized
 
 
 class ProductBase(BaseModel):
@@ -10,7 +21,13 @@ class ProductBase(BaseModel):
     image: Optional[str] = None
     icon: Optional[str] = None
     description: Optional[str] = None
+    price: Optional[str] = Field(default=None, max_length=100)
     whatsapp_message: Optional[str] = None
+
+    @field_validator("price")
+    @classmethod
+    def validate_price(cls, value):
+        return validate_price_value(value)
 
 
 class ProductCreate(ProductBase):
@@ -93,6 +110,12 @@ class ProductUpdate(BaseModel):
     name: Optional[str] = Field(default=None, min_length=1, max_length=200)
     image: Optional[str] = Field(default=None, max_length=1000)
     description: Optional[str] = Field(default=None, max_length=2000)
+    price: Optional[str] = Field(default=None, max_length=100)
+
+    @field_validator("price")
+    @classmethod
+    def validate_price(cls, value):
+        return validate_price_value(value)
 
 
 class SiteContentUpdate(BaseModel):

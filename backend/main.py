@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+import os
 
-from database import Base, engine
+from database import Base, engine, ensure_product_price_column
 from routers import products, metrics, contact, reviews, auth, content
 
 Base.metadata.create_all(bind=engine)
+ensure_product_price_column()
 
 app = FastAPI(
     title="UNIALRE API",
@@ -14,10 +16,9 @@ app = FastAPI(
     version="1.0.0"
 )
 
-origins = [
-    "http://localhost:4200",
-    "http://127.0.0.1:4200"
-]
+origins = [origin.strip() for origin in os.getenv(
+    "FRONTEND_ORIGINS", "http://localhost:4200,http://127.0.0.1:4200"
+).split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,3 +42,8 @@ def root():
     return {
         "message": "API UNIALRE funcionando correctamente"
     }
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}

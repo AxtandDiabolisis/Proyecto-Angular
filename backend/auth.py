@@ -14,9 +14,13 @@ from database import get_db
 from models import User
 
 load_dotenv(Path(__file__).with_name(".env"))
-SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+secret_file = os.getenv("JWT_SECRET_KEY_FILE")
+try:
+    SECRET_KEY = Path(secret_file).read_text(encoding="utf-8").strip() if secret_file else os.getenv("JWT_SECRET_KEY")
+except OSError as error:
+    raise RuntimeError("No se pudo leer JWT_SECRET_KEY_FILE") from error
 if not SECRET_KEY or len(SECRET_KEY) < 64:
-    raise RuntimeError("Configura JWT_SECRET_KEY (minimo 64 caracteres) en backend/.env")
+    raise RuntimeError("Configura una clave JWT de al menos 64 caracteres")
 
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_HOURS = 12

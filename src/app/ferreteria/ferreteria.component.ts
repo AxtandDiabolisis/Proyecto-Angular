@@ -76,7 +76,7 @@ export class FerreteriaComponent implements OnInit {
 
   openWhatsApp(productName: string): void {
     const text = `Hola, estoy interesado en productos de ferreteria: ${productName}`;
-    window.open(`https://wa.me/573046159935?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    window.open(`https://wa.me/573124986325?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
 
     // Registrar métrica
     const product = this.products.find(p => p.name === productName);

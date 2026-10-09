@@ -43,6 +43,13 @@ a {
   font-weight: 900;
 }
 
+.hardware-logo img {
+  width: 184px;
+  height: 61px;
+  object-fit: contain;
+  object-position: center;
+}
+
 .hardware-logo i {
   display: grid;
   width: 52px;

@@ -2,8 +2,8 @@
   <header class="hardware-header">
     <div class="hardware-container header-inner">
       <a class="hardware-logo" routerLink="/principal" aria-label="UNIALRE Ferreteria">
-        <i class="fa fa-hammer"></i>
-        <span>UNIALRE Ferreteria</span>
+        <img class="corporate-logo" src="assets/img/logo-unialre-2026.png" alt="Universal de Altos Relieves S.A.S.">
+        <span>Ferreteria</span>
       </a>
 
       <nav class="hardware-nav" aria-label="Menu principal ferreteria">
@@ -148,7 +148,7 @@
       </div>
       <div>
         <h3>Contactanos</h3>
-        <p>304 615 9935</p>
+        <p>312 498 6325</p>
         <p>ventas@unialre.co</p>
       </div>
       <div>
@@ -162,7 +162,7 @@
     <div class="copyright">2026 UNIALRE Ferreteria © - Todos los derechos reservados.</div>
   </footer>
 
-  <a class="hardware-whatsapp" href="https://wa.me/573046159935" target="_blank" rel="noreferrer" aria-label="WhatsApp ferreteria">
+  <a class="hardware-whatsapp" href="https://wa.me/573124986325" target="_blank" rel="noreferrer" aria-label="WhatsApp ferreteria">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
   <app-product-reviews *ngIf="activeReviewProduct as product" [productId]="product.id" [productLine]="product.line" [productName]="product.name" (closed)="activeReviewProduct = null"></app-product-reviews>
