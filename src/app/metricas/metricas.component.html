@@ -2,15 +2,15 @@
   <header class="metrics-header">
     <div class="metrics-container header-inner">
       <a class="brand" routerLink="/">
-        <i class="fa fa-chart-line"></i>
-        <span>Metricas UNIALRE</span>
+        <img class="corporate-logo" src="assets/img/logo-unialre-2026.png" alt="Universal de Altos Relieves S.A.S.">
+        <span>Métricas</span>
       </a>
 
-      <nav class="metrics-nav" aria-label="Navegacion de metricas">
+      <nav class="metrics-nav" aria-label="Navegación de métricas">
         <a routerLink="/">Principal</a>
         <a routerLink="/sellos">Sellos</a>
-        <a routerLink="/lenceria">Lenceria</a>
-        <a routerLink="/ferreteria">Ferreteria</a>
+        <a routerLink="/lenceria">Lencería</a>
+        <a routerLink="/ferreteria">Ferretería</a>
       </nav>
     </div>
   </header>
@@ -18,11 +18,11 @@
   <main class="metrics-container dashboard">
     <section class="hero">
       <div>
-        <p class="eyebrow">Panel de analitica</p>
-        <h1>Metricas de ventas, productos y opiniones</h1>
+        <p class="eyebrow">Panel de analítica</p>
+        <h1>Métricas de ventas, productos y opiniones</h1>
       </div>
       <div class="hero-actions">
-        <span>{{ metricsLoadError || reviewsLoadError ? 'No se pudo cargar parte de las metricas' : 'Datos de carrito, actividad y opiniones' }}</span>
+        <span aria-live="polite">{{ metricsLoadError || reviewsLoadError ? 'No se pudo cargar parte de las métricas' : 'Datos de carrito, actividad y opiniones' }}</span>
         <button type="button" (click)="downloadExcel()">
           <i class="fa fa-file-excel"></i>
           Descargar Excel
@@ -58,68 +58,103 @@
       </article>
       <article>
         <i class="fa fa-star"></i>
-        <span>Calificacion promedio</span>
-        <strong *ngIf="reviewSummary.total_reviews; else noReviewAverage">{{ reviewSummary.average_rating | number:'1.1-1' }} / 5</strong>
-        <ng-template #noReviewAverage><strong>Sin datos</strong></ng-template>
+        <span>Calificación promedio</span>
+        @if (reviewSummary.total_reviews) {
+          <strong>{{ reviewSummary.average_rating | number:'1.1-1' }} / 5</strong>
+        } @else {
+          <strong>Sin datos</strong>
+        }
       </article>
     </section>
 
     <section class="reviews-grid" aria-label="Opiniones y calificaciones">
       <article class="panel">
         <div class="panel-heading">
-          <h2>Distribucion de calificaciones</h2>
+          <h2>Distribución de calificaciones</h2>
           <p>{{ reviewsLoadError ? 'No se pudieron cargar las opiniones.' : 'Calificaciones recibidas por estrella.' }}</p>
         </div>
-        <p class="empty-state" *ngIf="reviewsLoading">Cargando opiniones...</p>
-        <p class="empty-state" *ngIf="reviewsLoadError">No se pudieron cargar las calificaciones.</p>
-        <p class="empty-state" *ngIf="!reviewsLoading && !reviewsLoadError && !reviewSummary.total_reviews">Aun no hay opiniones publicadas.</p>
-        <div class="rating-bars" *ngIf="reviewSummary.total_reviews">
-          <div class="rating-row" *ngFor="let rating of ratingLevels">
-            <span>{{ rating }} <i class="fa-solid fa-star" aria-hidden="true"></i></span>
-            <div class="bar-track"><div class="bar-fill" [style.width.%]="reviewCountForRating(rating) / maxReviewCount * 100"></div></div>
-            <strong>{{ reviewCountForRating(rating) }}</strong>
+        @if (reviewsLoading) {
+          <p class="empty-state">Cargando opiniones...</p>
+        }
+        @if (reviewsLoadError) {
+          <p class="empty-state">No se pudieron cargar las calificaciones.</p>
+        }
+        @if (!reviewsLoading && !reviewsLoadError && !reviewSummary.total_reviews) {
+          <p class="empty-state">Aún no hay opiniones publicadas.</p>
+        }
+        @if (reviewSummary.total_reviews) {
+          <div class="rating-bars">
+            @for (rating of ratingLevels; track rating) {
+              <div class="rating-row">
+                <span>{{ rating }} <i class="fa-solid fa-star" aria-hidden="true"></i></span>
+                <div class="bar-track"><div class="bar-fill" [style.width.%]="reviewCountForRating(rating) / maxReviewCount * 100"></div></div>
+                <strong>{{ reviewCountForRating(rating) }}</strong>
+              </div>
+            }
           </div>
-        </div>
+        }
       </article>
 
       <article class="panel table-panel">
         <div class="panel-heading">
-          <h2>Calificacion por linea</h2>
+          <h2>Calificación por línea</h2>
           <p>Promedio y cantidad de comentarios recibidos.</p>
         </div>
-        <p class="empty-state" *ngIf="reviewsLoading">Cargando opiniones...</p>
-        <p class="empty-state" *ngIf="!reviewSummary.by_line.length && !reviewsLoadError && !reviewsLoading">Todavia no hay datos por linea.</p>
-        <table *ngIf="reviewSummary.by_line.length">
-          <thead><tr><th>Linea</th><th>Opiniones</th><th>Promedio</th></tr></thead>
-          <tbody>
-            <tr *ngFor="let line of reviewSummary.by_line">
-              <td>{{ line.product_line }}</td>
-              <td>{{ line.total_reviews }}</td>
-              <td><i class="fa-solid fa-star rating-star" aria-hidden="true"></i> {{ line.average_rating | number:'1.1-1' }} / 5</td>
-            </tr>
-          </tbody>
-        </table>
+        @if (reviewsLoading) {
+          <p class="empty-state">Cargando opiniones...</p>
+        }
+        @if (!reviewSummary.by_line.length && !reviewsLoadError && !reviewsLoading) {
+          <p class="empty-state">Todavía no hay datos por línea.</p>
+        }
+        @if (reviewsLoadError) {
+          <p class="empty-state">No se pudieron cargar las calificaciones.</p>
+        }
+        @if (reviewSummary.by_line.length) {
+          <table>
+            <thead><tr><th>Línea</th><th>Opiniones</th><th>Promedio</th></tr></thead>
+            <tbody>
+              @for (line of reviewSummary.by_line; track line) {
+                <tr>
+                  <td>{{ line.product_line }}</td>
+                  <td>{{ line.total_reviews }}</td>
+                  <td><i class="fa-solid fa-star rating-star" aria-hidden="true"></i> {{ line.average_rating | number:'1.1-1' }} / 5</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
       </article>
     </section>
 
     <section class="panel table-panel reviews-products-panel">
       <div class="panel-heading">
-        <h2>Productos con mas opiniones</h2>
+        <h2>Productos con más opiniones</h2>
         <p>Comentarios recibidos y calificacion promedio por producto.</p>
       </div>
-      <p class="empty-state" *ngIf="reviewsLoading">Cargando opiniones...</p>
-      <p class="empty-state" *ngIf="!reviewSummary.by_product.length && !reviewsLoadError && !reviewsLoading">Aun no hay opiniones por producto.</p>
-      <table *ngIf="reviewSummary.by_product.length">
-        <thead><tr><th>Producto</th><th>Linea</th><th>Opiniones</th><th>Promedio</th></tr></thead>
-        <tbody>
-          <tr *ngFor="let product of reviewSummary.by_product">
-            <td>{{ product.product_name }}</td>
-            <td>{{ product.product_line }}</td>
-            <td>{{ product.total_reviews }}</td>
-            <td><i class="fa-solid fa-star rating-star" aria-hidden="true"></i> {{ product.average_rating | number:'1.1-1' }} / 5</td>
-          </tr>
-        </tbody>
-      </table>
+      @if (reviewsLoading) {
+        <p class="empty-state">Cargando opiniones...</p>
+      }
+      @if (!reviewSummary.by_product.length && !reviewsLoadError && !reviewsLoading) {
+        <p class="empty-state">Aún no hay opiniones por producto.</p>
+      }
+      @if (reviewsLoadError) {
+        <p class="empty-state">No se pudieron cargar las opiniones.</p>
+      }
+      @if (reviewSummary.by_product.length) {
+        <table>
+          <thead><tr><th>Producto</th><th>Línea</th><th>Opiniones</th><th>Promedio</th></tr></thead>
+          <tbody>
+            @for (product of reviewSummary.by_product; track product) {
+              <tr>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.product_line }}</td>
+                <td>{{ product.total_reviews }}</td>
+                <td><i class="fa-solid fa-star rating-star" aria-hidden="true"></i> {{ product.average_rating | number:'1.1-1' }} / 5</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
     </section>
 
     <section class="charts-grid">
@@ -129,29 +164,38 @@
           <p>Comparativo de clics, WhatsApp y carrito actual.</p>
         </div>
         <div class="bar-list">
-          <div class="bar-row" *ngFor="let metric of pageMetrics">
-            <div class="bar-label">
-              <span>{{ metric.name }}</span>
-              <strong>{{ metric.interactions }}</strong>
+          @for (metric of pageMetrics; track metric) {
+            <div class="bar-row">
+              <div class="bar-label">
+                <span>{{ metric.name }}</span>
+                <strong>{{ metric.interactions }}</strong>
+              </div>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="metric.interactions / maxInteractions * 100" [style.background]="metric.color"></div>
+              </div>
             </div>
-            <div class="bar-track">
-              <div class="bar-fill" [style.width.%]="metric.interactions / maxInteractions * 100" [style.background]="metric.color"></div>
-            </div>
-          </div>
+          }
         </div>
       </article>
 
       <article class="panel">
         <div class="panel-heading">
           <h2>Tendencia semanal</h2>
-          <p>Interacciones registradas por dia.</p>
+          <p>Interacciones registradas por día.</p>
         </div>
-        <div class="trend-chart">
-          <div class="trend-column" *ngFor="let metric of visitTrend">
-            <div class="trend-bar" [style.height.%]="metric.visits / maxTrendVisits * 100"></div>
-            <span>{{ metric.day }}</span>
+        @if (!totalTrendVisits) {
+          <p class="empty-state">Aún no hay interacciones registradas esta semana.</p>
+        }
+        @if (totalTrendVisits) {
+          <div class="trend-chart">
+            @for (metric of visitTrend; track metric) {
+              <div class="trend-column">
+                <div class="trend-bar" [style.height.%]="metric.visits / maxTrendVisits * 100"></div>
+                <span>{{ metric.day }}</span>
+              </div>
+            }
           </div>
-        </div>
+        }
       </article>
     </section>
 
@@ -159,27 +203,31 @@
       <article class="panel">
         <div class="panel-heading">
           <h2>Clics y carrito por producto</h2>
-          <p>Productos con mayor interes real.</p>
+          <p>Productos con mayor interés.</p>
         </div>
         <div class="product-bars">
-          <p class="empty-state" *ngIf="!productMetrics.length">Aun no hay productos en el carrito ni metricas registradas.</p>
-          <div class="product-row" *ngFor="let product of productMetrics">
-            <div>
-              <strong>{{ product.name }}</strong>
-              <span>{{ product.line }} | Carrito: {{ product.cartQuantity }} | WhatsApp: {{ product.whatsapp }}</span>
+          @if (!productMetrics.length) {
+            <p class="empty-state">Aún no hay productos en el carrito ni métricas registradas.</p>
+          }
+          @for (product of productMetrics; track product) {
+            <div class="product-row">
+              <div>
+                <strong>{{ product.name }}</strong>
+                <span>{{ product.line }} | Carrito: {{ product.cartQuantity }} | WhatsApp: {{ product.whatsapp }}</span>
+              </div>
+              <div class="mini-track">
+                <div class="mini-fill" [style.width.%]="(product.clicks + product.cartQuantity) / maxProductClicks * 100"></div>
+              </div>
+              <b>{{ product.clicks + product.cartQuantity }}</b>
             </div>
-            <div class="mini-track">
-              <div class="mini-fill" [style.width.%]="(product.clicks + product.cartQuantity) / maxProductClicks * 100"></div>
-            </div>
-            <b>{{ product.clicks + product.cartQuantity }}</b>
-          </div>
+          }
         </div>
       </article>
 
       <article class="panel table-panel">
         <div class="panel-heading">
           <h2>Rendimiento por pantalla</h2>
-          <p>Interacciones, clics y conversion.</p>
+          <p>Interacciones, clics y conversión.</p>
         </div>
         <table>
           <thead>
@@ -192,13 +240,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let metric of pageMetrics">
-              <td>{{ metric.name }}</td>
-              <td>{{ metric.interactions }}</td>
-              <td>{{ metric.cartItems }}</td>
-              <td>{{ metric.whatsapp }}</td>
-              <td>{{ metric.conversion }}%</td>
-            </tr>
+            @for (metric of pageMetrics; track metric) {
+              <tr>
+                <td>{{ metric.name }}</td>
+                <td>{{ metric.interactions }}</td>
+                <td>{{ metric.cartItems }}</td>
+                <td>{{ metric.whatsapp }}</td>
+                <td>{{ metric.conversion }}%</td>
+              </tr>
+            }
           </tbody>
         </table>
       </article>
@@ -207,27 +257,37 @@
     <section class="panel cart-panel">
       <div class="panel-heading">
         <h2>Carrito actual</h2>
-        <p>Productos agregados desde sellos, lenceria, ferreteria y tufting.</p>
+        <p>Productos agregados desde sellos, lencería, ferretería y tufting.</p>
       </div>
 
-      <p class="empty-state" *ngIf="!cartItems.length">El carrito actual esta vacio.</p>
+      @if (!cartItems.length) {
+        <p class="empty-state">El carrito actual está vacío.</p>
+      }
 
-      <div class="cart-list" *ngIf="cartItems.length">
-        <article *ngFor="let item of cartItems">
-          <img *ngIf="item.image" [src]="item.image" [alt]="item.name">
-          <div>
-            <strong>{{ item.name }}</strong>
-            <span>{{ item.line }} | {{ item.price || 'Sin precio' }}</span>
-          </div>
-          <b>{{ item.quantity }}</b>
-          <strong>{{ formatCurrency(cartSubtotal(item)) }}</strong>
-        </article>
-      </div>
+      @if (cartItems.length) {
+        <div class="cart-list">
+          @for (item of cartItems; track item) {
+            <article>
+              @if (item.image) {
+                <img [src]="item.image" [alt]="item.name">
+              }
+              <div>
+                <strong>{{ item.name }}</strong>
+                <span>{{ item.line }} | {{ item.price || 'Sin precio' }}</span>
+              </div>
+              <b>{{ item.quantity }}</b>
+              <strong>{{ formatCurrency(cartSubtotal(item)) }}</strong>
+            </article>
+          }
+        </div>
+      }
 
-      <div class="cart-total" *ngIf="cartItems.length">
-        <span>Total carrito</span>
-        <strong>{{ formatCurrency(totalCartValue) }}</strong>
-      </div>
+      @if (cartItems.length) {
+        <div class="cart-total">
+          <span>Total carrito</span>
+          <strong>{{ formatCurrency(totalCartValue) }}</strong>
+        </div>
+      }
     </section>
   </main>
 </div>

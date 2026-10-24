@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -16,7 +15,7 @@ interface HomepageContent {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
@@ -172,14 +171,17 @@ export class AdminComponent implements OnInit {
     if (!file) return;
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 4 * 1024 * 1024) {
       this.error = 'Selecciona una imagen JPG, PNG o WebP de maximo 4 MB.';
+      this.changeDetectorRef.markForCheck();
       return;
     }
     this.error = '';
     try {
       target[field] = await this.contentService.uploadImage(file);
       this.message = 'Imagen cargada. Guarda los cambios para publicarla.';
+      this.changeDetectorRef.markForCheck();
     } catch {
       this.error = 'No se pudo subir la imagen. Verifica tu sesion y la conexion con la API.';
+      this.changeDetectorRef.markForCheck();
     }
   }
 
@@ -187,6 +189,7 @@ export class AdminComponent implements OnInit {
     const target: EditableContent = { image: product.image || '' };
     await this.upload(event, target, 'image');
     if (target['image']) product.image = target['image'];
+    this.changeDetectorRef.markForCheck();
   }
 
   saveTuftingProduct(product: EditableContent): void {
@@ -211,9 +214,9 @@ export class AdminComponent implements OnInit {
     return {
       about: { image: 'assets/img/profesiones.jpg', title: 'Una empresa con varias lineas para resolver mejor', text: 'Creamos y comercializamos productos para negocios, hogares y proyectos creativos con asesoria clara, calidad constante y tiempos de respuesta rapidos.' },
       slides: [
-        { eyebrow: 'UNIALRE soluciones para tu negocio', title: 'Productos y servicios para empresas, hogar y proyectos', text: 'Integramos sellos, lenceria, ferreteria y tufting en una experiencia cercana y confiable.', image: 'assets/img/profesiones.jpg', primaryLabel: 'Conoce nuestras lineas', primaryLink: '#contacto', secondaryLabel: 'Ver productos', secondaryLink: '#servicios' },
+        { eyebrow: 'UNIALRE soluciones para tu negocio', title: 'Productos y servicios para empresas, hogar y proyectos', text: 'Integramos sellos, lenceria, ferreteria y tufting en una experiencia cercana y confiable.', image: 'assets/img/sede-tienda.jpg', primaryLabel: 'Conoce nuestras lineas', primaryLink: '#servicios', secondaryLabel: 'Ver productos', secondaryLink: '/sellos' },
         { eyebrow: 'Sellos y personalizacion', title: 'Marcacion profesional para documentos, marcas y procesos', text: 'Fabricamos sellos, fechadores, insumos y soluciones personalizadas para negocios.', image: 'assets/img/profesiones.jpg', primaryLabel: 'Ver sellos', primaryLink: '/sellos', secondaryLabel: 'Cotizar ahora', secondaryLink: '#contacto' },
-        { eyebrow: 'Lineas para hogar y proyectos', title: 'Lenceria, ferreteria y tufting en un solo lugar', text: 'Explora productos para el hogar, herramientas para tus proyectos y piezas textiles personalizadas.', image: 'assets/img/modelos-proyectos.jpg', primaryLabel: 'Hablar por WhatsApp', primaryLink: 'https://wa.me/573124986325', secondaryLabel: 'Ver lineas', secondaryLink: '#servicios' }
+        { eyebrow: 'Lineas para hogar y proyectos', title: 'Lenceria, ferreteria y tufting en un solo lugar', text: 'Explora productos para el hogar, herramientas para tus proyectos y piezas textiles personalizadas.', image: 'assets/img/modelos-proyectos.jpg', primaryLabel: 'Hablar por WhatsApp', primaryLink: '#contacto', secondaryLabel: 'Ver lineas', secondaryLink: '#servicios' }
       ],
       possibilities: [
         { title: 'Para negocios', text: 'Sellos, insumos y productos utiles para operaciones del dia a dia.', image: 'assets/img/profesiones.jpg' },

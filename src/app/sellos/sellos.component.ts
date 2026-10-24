@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { ProductsService, Product, Category } from '../services/products.service';
 import { MetricsService } from '../services/metrics.service';
@@ -11,13 +11,14 @@ import { ProductReviewsComponent } from '../product-reviews/product-reviews.comp
 @Component({
   selector: 'app-sellos',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ProductReviewsComponent],
+  imports: [FormsModule, RouterLink, RouterLinkActive, ProductReviewsComponent],
   templateUrl: './sellos.component.html',
   styleUrl: './sellos.component.css'
 })
 export class SellosComponent implements OnInit {
   selectedCategory = 'Todos';
-  sortOption = 'latest';
+  sortOption = 'name';
+  searchTerm = '';
   currentPage = 1;
   readonly pageSize = 20;
 
@@ -66,11 +67,32 @@ export class SellosComponent implements OnInit {
 
   get filteredProducts(): Product[] {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.products.slice(start, start + this.pageSize);
+    return this.matchingProducts.slice(start, start + this.pageSize);
+  }
+
+  get matchingProducts(): Product[] {
+    const term = this.normalizeText(this.searchTerm.trim());
+    const matches = this.products.filter((product) => {
+      const searchableText = this.normalizeText(`${product.name} ${product.category} ${product.description || ''}`);
+      return !term || searchableText.includes(term);
+    });
+
+    return matches.sort((first, second) => {
+      if (this.sortOption === 'price-low' || this.sortOption === 'price-high') {
+        const firstPrice = this.priceValue(first.price);
+        const secondPrice = this.priceValue(second.price);
+        if (firstPrice === null && secondPrice === null) return 0;
+        if (firstPrice === null) return 1;
+        if (secondPrice === null) return -1;
+        return this.sortOption === 'price-low' ? firstPrice - secondPrice : secondPrice - firstPrice;
+      }
+
+      return first.name.localeCompare(second.name, 'es', { sensitivity: 'base' });
+    });
   }
 
   get totalPages(): number {
-    return Math.max(1, Math.ceil(this.products.length / this.pageSize));
+    return Math.max(1, Math.ceil(this.matchingProducts.length / this.pageSize));
   }
 
   get pages(): number[] {
@@ -78,11 +100,11 @@ export class SellosComponent implements OnInit {
   }
 
   get firstShownProduct(): number {
-    return this.products.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
+    return this.matchingProducts.length ? (this.currentPage - 1) * this.pageSize + 1 : 0;
   }
 
   get lastShownProduct(): number {
-    return Math.min(this.currentPage * this.pageSize, this.products.length);
+    return Math.min(this.currentPage * this.pageSize, this.matchingProducts.length);
   }
 
   selectCategory(category: string): void {
@@ -160,6 +182,15 @@ export class SellosComponent implements OnInit {
 
   goToPage(page: number): void {
     this.currentPage = Math.min(Math.max(page, 1), this.totalPages);
+  }
+
+  private normalizeText(value: string): string {
+    return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+  }
+
+  private priceValue(price?: string | null): number | null {
+    const digits = price?.replace(/\D/g, '');
+    return digits ? Number(digits) : null;
   }
 
   private extractDriveFileId(image: string): string | undefined {

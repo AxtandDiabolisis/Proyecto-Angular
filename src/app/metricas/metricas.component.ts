@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -41,11 +41,11 @@ interface TrendMetric {
 })
 export class MetricasComponent implements OnInit, OnDestroy {
   pageMetrics: PageMetric[] = [
-    { name: 'Principal', route: '/principal', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#2563eb' },
-    { name: 'Sellos', route: '/sellos', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#e31e24' },
-    { name: 'Lenceria', route: '/lenceria', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#d96f9a' },
-    { name: 'Ferreteria', route: '/ferreteria', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#ffb000' },
-    { name: 'Tufting', route: '/tufting', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#ff4fb8' }
+    { name: 'Principal', route: '/principal', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#565752' },
+    { name: 'Sellos', route: '/sellos', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#bd242c' },
+    { name: 'Lencería', route: '/lenceria', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#d2a531' },
+    { name: 'Ferretería', route: '/ferreteria', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#628073' },
+    { name: 'Tufting', route: '/tufting', interactions: 0, cartItems: 0, clicks: 0, whatsapp: 0, conversion: 0, color: '#982a2d' }
   ];
 
   productMetrics: ProductMetric[] = [];
@@ -66,10 +66,10 @@ export class MetricasComponent implements OnInit, OnDestroy {
   visitTrend: TrendMetric[] = [
     { day: 'Lun', visits: 0 },
     { day: 'Mar', visits: 0 },
-    { day: 'Mie', visits: 0 },
+    { day: 'Mié', visits: 0 },
     { day: 'Jue', visits: 0 },
     { day: 'Vie', visits: 0 },
-    { day: 'Sab', visits: 0 },
+    { day: 'Sáb', visits: 0 },
     { day: 'Dom', visits: 0 }
   ];
 
@@ -78,7 +78,8 @@ export class MetricasComponent implements OnInit, OnDestroy {
   constructor(
     private metricsService: MetricsService,
     private cartService: CartService,
-    private productReviewsService: ProductReviewsService
+    private productReviewsService: ProductReviewsService,
+    private changeDetector: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +87,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
     this.cartSubscription = this.cartService.items$.subscribe((items) => {
       this.cartItems = items;
       this.rebuildDashboard();
+      this.changeDetector.markForCheck();
     });
     this.loadMetrics();
     this.loadReviewAnalytics();
@@ -102,11 +104,13 @@ export class MetricasComponent implements OnInit, OnDestroy {
       next: (summary: MetricSummary) => {
         this.metricRecords = summary.records;
         this.rebuildDashboard();
+        this.changeDetector.markForCheck();
       },
       error: (error) => {
         this.metricsLoadError = true;
         console.error('Error cargando metricas', error);
         this.rebuildDashboard();
+        this.changeDetector.markForCheck();
       }
     });
   }
@@ -118,11 +122,13 @@ export class MetricasComponent implements OnInit, OnDestroy {
       next: (summary) => {
         this.reviewSummary = summary;
         this.reviewsLoading = false;
+        this.changeDetector.markForCheck();
       },
       error: (error) => {
         this.reviewsLoadError = true;
         this.reviewsLoading = false;
         console.error('Error cargando metricas de opiniones', error);
+        this.changeDetector.markForCheck();
       }
     });
   }
@@ -159,6 +165,10 @@ export class MetricasComponent implements OnInit, OnDestroy {
     return Math.max(1, ...this.visitTrend.map((metric) => metric.visits));
   }
 
+  get totalTrendVisits(): number {
+    return this.visitTrend.reduce((total, metric) => total + metric.visits, 0);
+  }
+
   get maxProductClicks(): number {
     return Math.max(1, ...this.productMetrics.map((metric) => metric.clicks + metric.cartQuantity));
   }
@@ -186,7 +196,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
           <meta charset="utf-8">
         </head>
         <body>
-          <h1>Metricas UNIALRE</h1>
+          <h1>Métricas UNIALRE</h1>
 
           <h2>Resumen general</h2>
           <table border="1">
@@ -196,9 +206,9 @@ export class MetricasComponent implements OnInit, OnDestroy {
               <th>Productos en carrito</th>
               <th>Valor carrito</th>
               <th>Consultas WhatsApp</th>
-              <th>Conversion promedio</th>
+              <th>Conversión promedio</th>
               <th>Opiniones</th>
-              <th>Calificacion promedio</th>
+              <th>Calificación promedio</th>
             </tr>
             <tr>
               <td>${this.totalInteractions}</td>
@@ -212,7 +222,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
             </tr>
           </table>
 
-          <h2>Rendimiento por linea</h2>
+          <h2>Rendimiento por línea</h2>
           <table border="1">
             <tr>
               <th>Pantalla</th>
@@ -221,7 +231,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
               <th>Clics carrito</th>
               <th>Productos en carrito</th>
               <th>WhatsApp</th>
-              <th>Conversion</th>
+              <th>Conversión</th>
             </tr>
             ${this.pageMetrics.map((metric) => `
               <tr>
@@ -236,9 +246,9 @@ export class MetricasComponent implements OnInit, OnDestroy {
             `).join('')}
           </table>
 
-          <h2>Opiniones y calificaciones por linea</h2>
+          <h2>Opiniones y calificaciones por línea</h2>
           <table border="1">
-            <tr><th>Linea</th><th>Opiniones</th><th>Calificacion promedio</th></tr>
+            <tr><th>Línea</th><th>Opiniones</th><th>Calificación promedio</th></tr>
             ${this.reviewSummary.by_line.map((line) =>
               '<tr><td>' + line.product_line + '</td><td>' + line.total_reviews + '</td><td>' + line.average_rating + ' / 5</td></tr>'
             ).join('')}
@@ -246,7 +256,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
 
           <h2>Opiniones y calificaciones por producto</h2>
           <table border="1">
-            <tr><th>Producto</th><th>Linea</th><th>Opiniones</th><th>Calificacion promedio</th></tr>
+            <tr><th>Producto</th><th>Línea</th><th>Opiniones</th><th>Calificación promedio</th></tr>
             ${this.reviewSummary.by_product.map((product) =>
               '<tr><td>' + product.product_name + '</td><td>' + product.product_line + '</td><td>' + product.total_reviews + '</td><td>' + product.average_rating + ' / 5</td></tr>'
             ).join('')}
@@ -256,7 +266,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
           <table border="1">
             <tr>
               <th>Producto</th>
-              <th>Linea</th>
+              <th>Línea</th>
               <th>Clics carrito registrados</th>
               <th>Cantidad en carrito actual</th>
               <th>Valor en carrito actual</th>
@@ -278,7 +288,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
           <table border="1">
             <tr>
               <th>Producto</th>
-              <th>Linea</th>
+              <th>Línea</th>
               <th>Cantidad</th>
               <th>Precio</th>
               <th>Subtotal</th>
@@ -305,7 +315,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
     link.download = `metricas-unialre-${new Date().toISOString().slice(0, 10)}.xls`;
     link.click();
 
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   private rebuildDashboard(): void {
@@ -382,7 +392,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
   }
 
   private rebuildTrend(): void {
-    const dayLabels = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+    const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
     const totals = new Map<string, number>(dayLabels.map((day) => [day, 0]));
 
     for (const record of this.metricRecords) {
@@ -390,7 +400,7 @@ export class MetricasComponent implements OnInit, OnDestroy {
       totals.set(day, (totals.get(day) ?? 0) + 1);
     }
 
-    this.visitTrend = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'].map((day) => ({
+    this.visitTrend = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].map((day) => ({
       day,
       visits: totals.get(day) ?? 0
     }));
@@ -400,11 +410,11 @@ export class MetricasComponent implements OnInit, OnDestroy {
     const value = line.toLowerCase();
 
     if (value.includes('lencer')) {
-      return 'Lenceria';
+      return 'Lencería';
     }
 
     if (value.includes('ferreter')) {
-      return 'Ferreteria';
+      return 'Ferretería';
     }
 
     if (value.includes('tuft')) {

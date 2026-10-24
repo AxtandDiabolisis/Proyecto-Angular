@@ -1,14 +1,16 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { ContactService } from '../services/contact.service';
 import { SiteContentService } from '../services/site-content.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-principal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './principal.component.html',
   styleUrl: './principal.component.css'
 })
@@ -19,18 +21,18 @@ export class PrincipalComponent implements OnInit {
   heroSlides = [
     {
       eyebrow: 'UNIALRE soluciones para tu negocio',
-      title: 'Productos y servicios para empresas, hogar y proyectos',
-      text: 'Integramos sellos, lenceria, ferreteria y tufting en una experiencia cercana y confiable.',
-      image: 'assets/img/profesiones.jpg',
+      title: 'Todo para tu negocio',
+      text: 'Sellos, lencería, ferretería y tufting para el hogar, los negocios y tus proyectos.',
+      image: 'assets/img/sede-tienda.jpg',
       primaryLabel: 'Conoce nuestras lineas',
-      primaryLink: '#contacto',
+      primaryLink: '#servicios',
       secondaryLabel: 'Ver productos',
-      secondaryLink: '#servicios'
+      secondaryLink: '/sellos'
     },
     {
-      eyebrow: 'Sellos y personalizacion',
-      title: 'Marcacion profesional para documentos, marcas y procesos',
-      text: 'Fabricamos sellos, fechadores, insumos y soluciones personalizadas para negocios.',
+      eyebrow: 'Sellos y personalización',
+      title: 'Sellos para tu marca',
+      text: 'Fabricamos sellos, fechadores e insumos para identificar documentos y productos.',
       image: 'assets/img/profesiones.jpg',
       primaryLabel: 'Ver sellos',
       primaryLink: '/sellos',
@@ -38,10 +40,10 @@ export class PrincipalComponent implements OnInit {
       secondaryLink: '#contacto'
     },
     {
-      eyebrow: 'Lineas para hogar y proyectos',
-      title: 'Lenceria, ferreteria y tufting en un solo lugar',
-      text: 'Explora productos para el hogar, herramientas para tus proyectos y piezas textiles personalizadas.',
-      image: 'assets/img/modelos-proyectos.jpg',
+      eyebrow: 'Líneas para hogar y proyectos',
+      title: 'Hogar y proyectos',
+      text: 'Encuentra textiles, herramientas y piezas tufting para tus ideas.',
+      image: 'assets/img/usos-hogar.jpg',
       primaryLabel: 'Hablar por WhatsApp',
       primaryLink: 'https://wa.me/573124986325',
       secondaryLabel: 'Ver lineas',
@@ -51,8 +53,8 @@ export class PrincipalComponent implements OnInit {
 
   about = {
     image: 'assets/img/profesiones.jpg',
-    title: 'Una empresa con varias lineas para resolver mejor',
-    text: 'Creamos y comercializamos productos para negocios, hogares y proyectos creativos con asesoria clara, calidad constante y tiempos de respuesta rapidos.'
+    title: 'Un aliado para cada día',
+    text: 'Creamos y comercializamos productos para negocios, hogares y proyectos creativos con asesoría clara, calidad constante y respuesta oportuna.'
   };
 
   possibilities = [
@@ -69,13 +71,25 @@ export class PrincipalComponent implements OnInit {
     politica: false
   };
 
-  constructor(private contactService: ContactService, private contentService: SiteContentService) {}
+  constructor(
+    private contactService: ContactService,
+    private contentService: SiteContentService,
+    readonly auth: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.contentService.get<any>('homepage').subscribe({
       next: ({ value }) => {
         if (value?.slides?.length) this.heroSlides = this.heroSlides.map((slide, index) => ({ ...slide, ...(value.slides[index] || {}) }));
-        if (value?.about) this.about = { ...this.about, ...value.about };
+        if (value?.about) {
+          const savedAbout = value.about as Partial<{ image: string; title: string; text: string }>;
+          this.about = {
+            image: savedAbout.image?.trim() ? savedAbout.image : this.about.image,
+            title: savedAbout.title?.trim() ? savedAbout.title : this.about.title,
+            text: savedAbout.text?.trim() ? savedAbout.text : this.about.text
+          };
+        }
         if (value?.possibilities?.length) this.possibilities = this.possibilities.map((item, index) => ({ ...item, ...(value.possibilities[index] || {}) }));
       },
       error: () => undefined
@@ -90,6 +104,22 @@ export class PrincipalComponent implements OnInit {
     this.menuOpen = false;
   }
 
+  navigateToSection(section: string, event: MouseEvent): void {
+    event.preventDefault();
+    this.closeMenu();
+    void this.router.navigate(['/principal'], { fragment: section, replaceUrl: true }).then(() => {
+      window.requestAnimationFrame(() => {
+        const target = document.getElementById(section);
+        if (!target) return;
+        target.scrollIntoView({
+          block: 'start',
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+        });
+        target.focus({ preventScroll: true });
+      });
+    });
+  }
+
   nextHeroSlide(): void {
     this.currentHeroSlide = (this.currentHeroSlide + 1) % this.heroSlides.length;
   }
@@ -100,6 +130,22 @@ export class PrincipalComponent implements OnInit {
 
   goToHeroSlide(index: number): void {
     this.currentHeroSlide = index;
+  }
+
+  followHeroLink(link: string, event: MouseEvent): void {
+    event.preventDefault();
+
+    if (link.startsWith('#')) {
+      this.navigateToSection(link.slice(1), event);
+      return;
+    }
+
+    if (link.startsWith('/')) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    window.open(link, '_blank', 'noopener,noreferrer');
   }
 
   sendForm(): void {

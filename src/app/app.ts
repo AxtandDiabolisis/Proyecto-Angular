@@ -26,7 +26,7 @@ export class App {
     this.auth.refreshProfile().subscribe();
     this.auth.sessionEnded$.subscribe(() => {
       const currentPath = this.router.url.split('?')[0].split('#')[0];
-      if (currentPath === '/metricas' || currentPath === '/administracion') {
+      if (['/metricas', '/administracion', '/ferreteria', '/lenceria'].includes(currentPath)) {
         void this.router.navigateByUrl('/cuenta');
       }
     });

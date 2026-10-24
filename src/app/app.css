@@ -9,12 +9,13 @@
   z-index: 40;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   padding: 5px;
-  border: 1px solid #ded8d4;
-  border-radius: 7px;
-  background: #fff;
-  box-shadow: 0 5px 20px #241b1724;
+  border: 1px solid #393a35;
+  border-left: 4px solid #e2b332;
+  border-radius: 4px;
+  background: #272925;
+  box-shadow: 0 6px 18px #20211f2e;
 }
 
 .account-shortcuts a,
@@ -23,13 +24,13 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  min-width: 38px;
-  min-height: 38px;
+  min-width: 40px;
+  min-height: 42px;
   border: 0;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 0 10px;
   background: transparent;
-  color: #352d29;
+  color: #f7f5f0;
   font: inherit;
   font-size: 12px;
   font-weight: 800;
@@ -39,7 +40,18 @@
 
 .account-shortcuts a:hover,
 .account-shortcuts button:hover {
-  background: #f3eeeb;
+  background: #3a3c36;
+}
+
+.account-shortcuts a[href="/cuenta"] {
+  padding-inline: 14px;
+  background: #e2b332;
+  color: #252621;
+}
+
+.account-shortcuts a[href="/cuenta"]:hover {
+  background: #f0c94f;
+  transform: translateY(-1px);
 }
 
 .account-shortcuts a[href="/metricas"],
@@ -53,8 +65,13 @@
   background: #c82b31;
 }
 
+.account-shortcuts { left:22px; right:auto; border:0; border-left:0; border-radius:3px; background:#20201f; box-shadow:none; }
+.account-shortcuts a[href="/cuenta"] { background:transparent; color:#fff; }
+.account-shortcuts a[href="/cuenta"]:hover { background:#383836; transform:none; }
+.account-shortcuts a[href="/metricas"], .account-shortcuts a[href="/administracion"] { background:transparent; }
+
 @media (max-width: 480px) {
-  .account-shortcuts { left: 10px; bottom: 12px; }
-  .account-shortcuts a { min-width: 38px; }
-  .account-shortcuts a span { display: none; }
+  .account-shortcuts { left: 12px; right: auto; bottom: 12px; }
+  .account-shortcuts a { min-width: 40px; }
+  .account-shortcuts a:not([href="/cuenta"]) span { display: none; }
 }

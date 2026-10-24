@@ -6,123 +6,173 @@
         <span>Ferreteria</span>
       </a>
 
-      <nav class="hardware-nav" aria-label="Menu principal ferreteria">
-        <a routerLink="/ferreteria">Nuestros productos</a>
+      <nav class="hardware-nav" aria-label="Menú principal ferretería">
+        <a href="#productos">Productos</a>
         <a href="#asesoria">Asesoria</a>
         <a href="#preguntas">Preguntas Frecuentes</a>
         <a href="#contacto-ferreteria">Contacto</a>
-        <a routerLink="/sellos" class="back-link">UNIALRE Sellos</a>
-        <a routerLink="/lenceria" class="back-link">UNIALRE Lenceria</a>
-        <a routerLink="/principal" class="back-link">UNIALRE Pagina Principal</a>
       </nav>
+      <a class="hardware-login" routerLink="/cuenta">
+        <i class="fa-solid fa-user" aria-hidden="true"></i>
+        Ingresar
+      </a>
     </div>
   </header>
 
   <section class="search-band">
     <div class="hardware-container search-panel">
       <div>
-        <p class="kicker">Busqueda</p>
-        <h1>Encuentra herramientas para cada proyecto</h1>
+        <p class="kicker">UNIALRE / Ferretería</p>
+        <h1>Herramientas para tu obra</h1>
       </div>
+      <img class="search-visual" src="assets/img/ferreteria/hero-taller.webp" alt="Taladro, llaves y herramientas organizadas sobre una mesa de taller">
       <label class="search-box">
         <i class="fa fa-search"></i>
-        <input type="search" placeholder="Buscar taladros, llaves, tornillos...">
+        <input type="search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" aria-label="Buscar productos de ferretería" placeholder="Busca por producto, categoría o uso">
       </label>
     </div>
   </section>
 
   <section class="shop-hero">
     <div class="hardware-container">
-      <p><a routerLink="/">Inicio</a> / Ferreteria</p>
-      <h2>Nuestros productos</h2>
+      <p><a routerLink="/principal">UNIALRE</a><span aria-hidden="true"> / </span> Ferreteria</p>
+      <h2>Todo para construir y reparar</h2>
+      <span class="shop-hero-note">Explora el catálogo o cuéntanos qué tienes en mente.</span>
     </div>
   </section>
 
   <main id="productos" class="hardware-container shop-layout">
     <aside class="category-panel" aria-label="Categorias de ferreteria">
-      <p>Elige una categoria</p>
+      <p>Filtra por categoría</p>
       <div class="category-list">
-        <button
-          *ngFor="let category of categories"
-          type="button"
-          [class.active]="selectedCategory === category.name"
-          (click)="selectCategory(category.name)"
-        >
-          <span>{{ category.name }}</span>
-          <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
-        </button>
+        @for (category of categories; track category) {
+          <button
+            type="button"
+            [class.active]="selectedCategory === category.name"
+            (click)="selectCategory(category.name)"
+            >
+            <span>{{ category.name }}</span>
+            <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
+          </button>
+        }
       </div>
     </aside>
 
     <section class="products-area">
       <div class="products-toolbar">
-        <p>Mostrando {{ filteredProducts.length }} de {{ products.length }} resultados</p>
-        <select [(ngModel)]="sortOption" aria-label="Ordenar productos de ferreteria">
-          <option value="popular">Ordenar por popularidad</option>
-          <option value="latest">Ordenar por las ultimas</option>
-          <option value="price-low">Ordenar por precio: bajo a alto</option>
-          <option value="price-high">Ordenar por precio: alto a bajo</option>
-        </select>
+        <p>Mostrando {{ startIndex }}–{{ endIndex }} de {{ matchingProducts.length }} productos</p>
+        <label class="sort-control">Ordenar
+          <select [(ngModel)]="sortOption" (ngModelChange)="onSortChange()" aria-label="Ordenar productos de ferretería">
+            <option value="name-asc">Nombre: A–Z</option>
+            <option value="name-desc">Nombre: Z–A</option>
+            <option value="price-low">Ordenar por precio: bajo a alto</option>
+            <option value="price-high">Ordenar por precio: alto a bajo</option>
+          </select>
+        </label>
       </div>
+
+      @if (productsLoading) {
+        <p class="catalog-state" role="status">Cargando productos…</p>
+      }
+      @if (productsError && !productsLoading) {
+        <div class="catalog-state catalog-state--error" role="alert">
+          <span>No pudimos cargar el catálogo.</span>
+          <button type="button" (click)="loadProducts()">Intentar de nuevo</button>
+        </div>
+      }
 
       <div class="products-grid">
-        <article class="product-card" *ngFor="let product of filteredProducts">
-          <div class="product-image">
-            <img [src]="product.image" [alt]="product.name">
-            <i class="fa" [class]="product.icon"></i>
-          </div>
-          <div class="product-info">
-            <span>{{ product.category }}</span>
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description }}</p>
-            <button class="product-reviews-link" type="button" (click)="openReviews(product)">
-              <i class="fa-regular fa-star" aria-hidden="true"></i> Opiniones y calificación
-            </button>
-            <div class="product-actions">
-              <button type="button" (click)="addToCart(product)">
-                <i class="fa fa-cart-plus"></i>
-                <strong class="cart-button-label">
-                  {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}
-                </strong>
-              </button>
-              <button type="button" (click)="openWhatsApp(product.name)">
-                <i class="fa-brands fa-whatsapp"></i>
-                Consultar por WhatsApp
-              </button>
+        @for (product of filteredProducts; track product) {
+          <article class="product-card">
+            <div class="product-image" [class.product-image--placeholder]="!product.image || failedProductImages.has(product.id)">
+              @if (product.image && !failedProductImages.has(product.id)) {
+                <img [src]="product.image" [alt]="product.name" loading="lazy" (error)="onProductImageError(product)">
+              }
+              @if (!product.image || failedProductImages.has(product.id)) {
+                <i class="fa" [class]="product.icon || 'fa-screwdriver-wrench'" aria-hidden="true"></i>
+              }
             </div>
-          </div>
-        </article>
+            <div class="product-info">
+              <span>{{ product.category }}</span>
+              <h3>{{ product.name }}</h3>
+              <p>{{ product.description }}</p>
+              @if (product.price) {
+                <strong class="product-price">{{ product.price }}</strong>
+              }
+              <button class="product-reviews-link" type="button" (click)="openReviews(product)">
+                <i class="fa-regular fa-star" aria-hidden="true"></i> Opiniones y calificación
+              </button>
+              <div class="product-actions">
+                <button type="button" (click)="addToCart(product)">
+                  <i class="fa fa-cart-plus"></i>
+                  <strong class="cart-button-label">
+                    {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}
+                  </strong>
+                </button>
+                <button type="button" (click)="openWhatsApp(product.name)">
+                  <i class="fa-brands fa-whatsapp"></i>
+                  Consultar por WhatsApp
+                </button>
+              </div>
+            </div>
+          </article>
+        }
       </div>
 
-      <nav class="pagination" aria-label="Paginacion ferreteria">
-        <button type="button" [class.active]="currentPage === 1" (click)="goToPage(1)">1</button>
-        <button type="button" [class.active]="currentPage === 2" (click)="goToPage(2)">2</button>
-        <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
-          <i class="fa fa-arrow-right"></i>
-        </button>
-      </nav>
+      @if (!productsLoading && !productsError && !matchingProducts.length) {
+        <div class="catalog-state" role="status">
+          <span>No encontramos productos con esa búsqueda.</span>
+          <button type="button" (click)="clearSearch()">Limpiar búsqueda</button>
+        </div>
+      }
+
+      @if (totalPages > 1) {
+        <nav class="pagination" aria-label="Paginación del catálogo">
+          <button type="button" aria-label="Página anterior" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          </button>
+          @for (page of pageNumbers; track page) {
+            <button type="button" [class.active]="currentPage === page" [attr.aria-current]="currentPage === page ? 'page' : null" (click)="goToPage(page)">{{ page }}</button>
+          }
+          <button type="button" aria-label="Página siguiente" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <i class="fa fa-arrow-right"></i>
+          </button>
+        </nav>
+      }
     </section>
   </main>
 
   <section id="asesoria" class="advice-band">
     <div class="hardware-container advice-grid">
       <div>
-        <p class="kicker">Asesoria tecnica</p>
-        <h2>Te ayudamos a elegir la herramienta correcta</h2>
+        <p class="kicker">Asesoría cercana</p>
+        <h2>Te ayudamos a elegir</h2>
+        <p>Cuéntanos qué quieres construir, reparar o instalar. Revisamos contigo las opciones del catálogo.</p>
+        <a class="advice-link" href="https://wa.me/573124986325" target="_blank" rel="noreferrer">Consultar por WhatsApp <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
       </div>
-      <div class="advice-cards">
-        <div>
-          <strong>+500</strong>
-          <span>Referencias disponibles</span>
-        </div>
-        <div>
-          <strong>24h</strong>
-          <span>Respuesta a cotizaciones</span>
-        </div>
-        <div>
-          <strong>100%</strong>
-          <span>Orientacion personalizada</span>
-        </div>
+      <img class="advice-image" src="assets/img/modelos-proyectos.jpg" alt="Herramientas y materiales en una mesa de trabajo" loading="lazy">
+    </div>
+  </section>
+
+  <section id="preguntas" class="hardware-faq">
+    <div class="hardware-container faq-layout">
+      <div>
+        <p class="kicker">Antes de empezar</p>
+        <h2>Preguntas frecuentes</h2>
+      </div>
+      <div class="faq-list">
+        <details>
+          <summary>¿Cómo elijo una herramienta para mi proyecto?</summary>
+          <p>Comparte el tipo de trabajo, el material y la frecuencia de uso. Con esos datos podemos orientarte sobre las opciones disponibles.</p>
+        </details>
+        <details>
+          <summary>¿Cómo consulto precio y disponibilidad?</summary>
+          <p>Abre la consulta del producto o escríbenos por WhatsApp. Confirmamos el precio y la disponibilidad antes de tu compra.</p>
+        </details>
+        <details>
+          <summary>¿Puedo preguntar por un producto que no aparece aquí?</summary>
+          <p>Sí. Envíanos el nombre, una foto o una descripción y revisamos si podemos ayudarte a conseguirlo.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -165,5 +215,7 @@
   <a class="hardware-whatsapp" href="https://wa.me/573124986325" target="_blank" rel="noreferrer" aria-label="WhatsApp ferreteria">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
-  <app-product-reviews *ngIf="activeReviewProduct as product" [productId]="product.id" [productLine]="product.line" [productName]="product.name" (closed)="activeReviewProduct = null"></app-product-reviews>
+  @if (activeReviewProduct; as product) {
+    <app-product-reviews [productId]="product.id" [productLine]="product.line" [productName]="product.name" (closed)="activeReviewProduct = null"></app-product-reviews>
+  }
 </div>

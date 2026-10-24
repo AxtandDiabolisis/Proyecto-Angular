@@ -1,4 +1,4 @@
-<div class="page">
+﻿<div class="page">
   <div class="top-bar">
     <div class="container top-bar__inner">
       <a href="https://wa.me/573124986325" target="_blank" rel="noreferrer">
@@ -25,7 +25,7 @@
         aria-label="Abrir menu"
         [attr.aria-expanded]="menuOpen"
         (click)="toggleMenu()"
-      >
+        >
         <span></span>
         <span></span>
         <span></span>
@@ -33,55 +33,68 @@
 
       <ul class="nav-menu" [class.nav-menu--open]="menuOpen">
         <li><a href="#inicio" (click)="closeMenu()">Inicio</a></li>
-        <li><a href="#nosotros" (click)="closeMenu()">Nosotros</a></li>
+        <li><a href="#nosotros" (click)="navigateToSection('nosotros', $event)">Nosotros</a></li>
         <li class="dropdown">
           <a href="#servicios">Servicios <i class="fa fa-chevron-down"></i></a>
           <ul class="dropdown-menu">
             <li><a href="/sellos" target="_blank" rel="noreferrer" (click)="closeMenu()">Sellos</a></li>
-            <li><a href="/lenceria" target="_blank" rel="noreferrer" (click)="closeMenu()">Lenceria</a></li>
-            <li><a href="/ferreteria" target="_blank" rel="noreferrer" (click)="closeMenu()">Ferreteria</a></li>
+            @if (auth.user()?.role === 'admin') {
+              <li><a href="/lenceria" target="_blank" rel="noreferrer" (click)="closeMenu()">Lencería</a></li>
+            }
+            @if (auth.user()?.role !== 'admin') {
+              <li><span class="menu-coming-soon">Lencería <small>Próximamente</small></span></li>
+            }
+            @if (auth.user()?.role === 'admin') {
+              <li><a href="/ferreteria" target="_blank" rel="noreferrer" (click)="closeMenu()">Ferretería</a></li>
+            }
+            @if (auth.user()?.role !== 'admin') {
+              <li><span class="menu-coming-soon">Ferretería <small>Próximamente</small></span></li>
+            }
             <li><a href="/tufting" target="_blank" rel="noreferrer" (click)="closeMenu()">Tufting</a></li>
           </ul>
         </li>
-        <li><a href="#contacto" (click)="closeMenu()">Contacto</a></li>
+        <li><a href="#contacto" (click)="navigateToSection('contacto', $event)">Contacto</a></li>
       </ul>
     </nav>
   </header>
 
   <main>
     <section id="inicio" class="hero" aria-label="Carrusel principal">
-      <article
-        class="hero__slide"
-        *ngFor="let slide of heroSlides; let i = index"
-        [class.hero__slide--active]="i === currentHeroSlide"
-        [style.background-image]="'url(' + slide.image + ')'"
-        [attr.aria-hidden]="i !== currentHeroSlide"
-      >
-        <div class="hero__overlay"></div>
-        <div class="container hero__content">
-          <p class="eyebrow">{{ slide.eyebrow }}</p>
-          <h1>{{ slide.title }}</h1>
-          <p class="hero__text">{{ slide.text }}</p>
-          <div class="hero__actions">
-            <a
-              class="btn btn--primary"
-              [href]="slide.primaryLink"
-              [attr.target]="slide.primaryLink.startsWith('/') ? '_blank' : null"
-              [attr.rel]="slide.primaryLink.startsWith('/') ? 'noreferrer' : null"
-            >
-              {{ slide.primaryLabel }}
-            </a>
-            <a
-              class="btn btn--light"
-              [href]="slide.secondaryLink"
-              [attr.target]="slide.secondaryLink.startsWith('/') ? '_blank' : null"
-              [attr.rel]="slide.secondaryLink.startsWith('/') ? 'noreferrer' : null"
-            >
-              {{ slide.secondaryLabel }}
-            </a>
+      @for (slide of heroSlides; track slide; let i = $index) {
+        <article
+          class="hero__slide"
+          [class.hero__slide--active]="i === currentHeroSlide"
+          [style.background-image]="'url(' + slide.image + ')'"
+          [attr.aria-hidden]="i !== currentHeroSlide"
+          >
+          <div class="hero__overlay"></div>
+          <div class="container hero__content">
+            <p class="eyebrow">{{ slide.eyebrow }}</p>
+            <h1>{{ slide.title }}</h1>
+            <p class="hero__text">{{ slide.text }}</p>
+            <div class="hero__actions">
+              <a
+                class="btn btn--primary"
+                [href]="slide.primaryLink"
+                [attr.target]="slide.primaryLink.startsWith('/') ? '_blank' : null"
+                [attr.rel]="slide.primaryLink.startsWith('/') ? 'noreferrer' : null"
+                (click)="followHeroLink(slide.primaryLink, $event)"
+                >
+                {{ slide.primaryLabel }}
+              </a>
+              <a
+                class="btn btn--light"
+                [href]="slide.secondaryLink"
+                [attr.target]="slide.secondaryLink.startsWith('/') ? '_blank' : null"
+                [attr.rel]="slide.secondaryLink.startsWith('/') ? 'noreferrer' : null"
+                (click)="followHeroLink(slide.secondaryLink, $event)"
+                >
+                {{ slide.secondaryLabel }}
+              </a>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+      }
 
       <button class="hero__arrow hero__arrow--prev" type="button" aria-label="Imagen anterior" (click)="previousHeroSlide()">
         <i class="fa fa-chevron-left"></i>
@@ -91,14 +104,15 @@
       </button>
 
       <div class="hero__dots" aria-label="Seleccionar diapositiva">
-        <button
-          *ngFor="let slide of heroSlides; let i = index"
-          type="button"
-          [class.hero__dot--active]="i === currentHeroSlide"
-          [attr.aria-label]="'Ver diapositiva ' + (i + 1)"
-          [attr.aria-current]="i === currentHeroSlide"
-          (click)="goToHeroSlide(i)"
-        ></button>
+        @for (slide of heroSlides; track slide; let i = $index) {
+          <button
+            type="button"
+            [class.hero__dot--active]="i === currentHeroSlide"
+            [attr.aria-label]="'Ver diapositiva ' + (i + 1)"
+            [attr.aria-current]="i === currentHeroSlide"
+            (click)="goToHeroSlide(i)"
+          ></button>
+        }
       </div>
     </section>
 
@@ -106,50 +120,55 @@
       <div class="container">
         <div class="section-heading">
           <p class="eyebrow">Lineas UNIALRE</p>
-          <h2>Soluciones para empresa, hogar y proyectos creativos</h2>
+          <h2>Soluciones para cada espacio</h2>
         </div>
 
         <div class="cards services-grid">
-          <a class="service-card service-card--link" href="/sellos" target="_blank" rel="noreferrer" aria-label="Abrir la pagina de productos de sellos en una pestaña nueva">
-            <i class="fa fa-stamp"></i>
-            <h3>Productos de sellos</h3>
-            <p>Sellos manuales, automaticos, fechadores e insumos para tu negocio.</p>
+          <a class="service-card service-card--link" href="/sellos" target="_blank" rel="noreferrer" aria-label="Explorar la línea de Sellos">
+            <i class="fa fa-stamp" aria-hidden="true"></i>
+            <h3>Sellos</h3>
+            <p>Sellos y fechadores para marcar documentos y productos de tu negocio.</p>
           </a>
-          <article class="service-card">
-            <i class="fa fa-tint"></i>
-            <h3>Insumos y repuestos</h3>
-            <p>Tintas, repuestos y accesorios para mantener tus procesos siempre activos.</p>
-          </article>
-          <article class="service-card">
-            <i class="fa fa-pen-nib"></i>
-            <h3>Personalizacion</h3>
-            <p>Disenos a la medida para marcas, firmas, textiles y productos especiales.</p>
-          </article>
-          <article class="service-card">
-            <i class="fa fa-bolt"></i>
-            <h3>Corte laser sobre diferentes superficies</h3>
-            <p>Acabados precisos para proyectos corporativos, comerciales y creativos.</p>
-          </article>
-          <a class="service-card service-card--link" href="/tufting" target="_blank" rel="noreferrer" aria-label="Abrir la pagina de tufting en una pestana nueva">
-            <i class="fa fa-brush"></i>
+          <a class="service-card service-card--link" href="/tufting" target="_blank" rel="noreferrer" aria-label="Explorar la línea de Tufting">
+            <i class="fa fa-brush" aria-hidden="true"></i>
             <h3>Tufting</h3>
-            <p>Diseños personalizados para proyectos creativos y decorativos.</p>
+            <p>Crea tapetes y piezas textiles con tus diseños y colores favoritos.</p>
           </a>
-          <a class="service-card service-card--link" href="/lenceria" target="_blank" rel="noreferrer" aria-label="Abrir la pagina de lenceria en una pestaña nueva">
-            <i class="fa fa-bed"></i>
-            <h3>Lenceria</h3>
-            <p>Diseños exclusivos para el hogar.</p>
-          </a>
-          <a class="service-card service-card--link" href="/ferreteria" target="_blank" rel="noreferrer" aria-label="Abrir la pagina de ferreteria en una pestaña nueva">
-            <i class="fa fa-tools"></i>
-            <h3>Ferretería</h3>
-            <p>Herramientas y materiales para tus proyectos de construcción y reparación.</p>
-          </a>
+          @if (auth.user()?.role === 'admin') {
+            <a class="service-card service-card--link" href="/lenceria" target="_blank" rel="noreferrer" aria-label="Explorar la línea de Lencería para el hogar">
+              <i class="fa fa-bed" aria-hidden="true"></i>
+              <h3>Lencería</h3>
+              <p>Ropa de cama y textiles para darle calidez a cada espacio de tu hogar.</p>
+            </a>
+          }
+          @if (auth.user()?.role !== 'admin') {
+            <article class="service-card service-card--coming-soon">
+              <i class="fa fa-bed" aria-hidden="true"></i>
+              <h3>Lencería</h3>
+              <p>Ropa de cama y textiles para darle calidez a cada espacio de tu hogar.</p>
+              <span class="service-status">Próximamente</span>
+            </article>
+          }
+          @if (auth.user()?.role === 'admin') {
+            <a class="service-card service-card--link" href="/ferreteria" target="_blank" rel="noreferrer" aria-label="Explorar la línea de Ferretería">
+              <i class="fa fa-tools" aria-hidden="true"></i>
+              <h3>Ferretería</h3>
+              <p>Herramientas y materiales para tus proyectos de construcción y reparación.</p>
+            </a>
+          }
+          @if (auth.user()?.role !== 'admin') {
+            <article class="service-card service-card--coming-soon">
+              <i class="fa fa-tools" aria-hidden="true"></i>
+              <h3>Ferretería</h3>
+              <p>Herramientas y materiales para tus proyectos de construcción y reparación.</p>
+              <span class="service-status">Próximamente</span>
+            </article>
+          }
         </div>
       </div>
     </section>
 
-    <section id="nosotros" class="section section--soft">
+    <section id="nosotros" class="section section--soft" tabindex="-1">
       <div class="container about">
         <div class="about__image">
           <img [src]="about.image" alt="Imagen de la empresa">
@@ -162,16 +181,16 @@
           </p>
           <div class="stats">
             <div>
-              <strong>98%</strong>
-              <span>Rapidez en la entrega</span>
+              <strong>4 lineas</strong>
+              <span>Sellos, hogar, herramientas y tufting</span>
             </div>
             <div>
-              <strong>96%</strong>
-              <span>Satisfaccion del cliente</span>
+              <strong>Colombia</strong>
+              <span>Envios a nivel nacional</span>
             </div>
             <div>
-              <strong>100%</strong>
-              <span>Calidad</span>
+              <strong>Contigo</strong>
+              <span>Asesoria para elegir mejor</span>
             </div>
           </div>
         </div>
@@ -183,7 +202,7 @@
       <div class="container sedes__content">
         <div class="section-heading section-heading--light">
           <p class="eyebrow">Sedes</p>
-          <h2>Encuentranos en puntos clave</h2>
+          <h2>Visítanos en Colombia</h2>
         </div>
 
         <div class="cards sedes-grid">
@@ -226,26 +245,28 @@
       <div class="container">
         <div class="section-heading">
           <p class="eyebrow">Posibilidades</p>
-          <h2>Una marca, multiples posibilidades</h2>
+          <h2>Ideas para cada espacio</h2>
         </div>
 
         <div class="cards possibilities-grid">
-          <article class="image-card" *ngFor="let item of possibilities">
-            <img [src]="item.image" [alt]="item.title">
-            <div>
-              <h3>{{ item.title }}</h3>
-              <p>{{ item.text }}</p>
-            </div>
-          </article>
+          @for (item of possibilities; track item) {
+            <article class="image-card">
+              <img [src]="item.image" [alt]="item.title">
+              <div>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.text }}</p>
+              </div>
+            </article>
+          }
         </div>
       </div>
     </section>
 
-    <section id="contacto" class="section section--soft">
+    <section id="contacto" class="section section--soft" tabindex="-1">
       <div class="container contact">
         <div class="contact__info">
           <p class="eyebrow">Contacto</p>
-          <h2>Cotiza productos o servicios por WhatsApp</h2>
+          <h2>Cotiza por WhatsApp</h2>
           <p>
             Cuentanos que necesitas y te responderemos con una opcion ajustada a tu negocio o proyecto.
           </p>
@@ -316,4 +337,3 @@
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 </div>
-

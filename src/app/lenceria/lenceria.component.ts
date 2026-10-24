@@ -1,7 +1,7 @@
-import { CommonModule } from '@angular/common';
+
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { ProductsService, Product, Category } from '../services/products.service';
 import { MetricsService } from '../services/metrics.service';
@@ -11,7 +11,7 @@ import { ProductReviewsComponent } from '../product-reviews/product-reviews.comp
 @Component({
   selector: 'app-lenceria',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ProductReviewsComponent],
+  imports: [FormsModule, RouterLink, RouterLinkActive, ProductReviewsComponent],
   templateUrl: './lenceria.component.html',
   styleUrl: './lenceria.component.css'
 })

@@ -26,7 +26,7 @@ interface Draft {
 }
 
 const DEFAULTS: DesignSettings = {
-  name: 'Mi custom rug', shape: 'rectangle', pattern: 'checker', width: 80, height: 60,
+  name: 'Mi tapete', shape: 'rectangle', pattern: 'checker', width: 80, height: 60,
   baseColor: '#ff4fb8', accentColor: '#68f2cf', use: 'Piso', finish: 'Por definir', notes: ''
 };
 
@@ -69,7 +69,7 @@ export class TuftingDisenoComponent implements AfterViewInit, OnDestroy {
     { id: 'rectangle', name: 'Rectangular', icon: 'fa-square' },
     { id: 'circle', name: 'Circular', icon: 'fa-circle' },
     { id: 'oval', name: 'Ovalado', icon: 'fa-egg' },
-    { id: 'organic', name: 'Organico', icon: 'fa-cloud' }
+    { id: 'organic', name: 'Orgánico', icon: 'fa-cloud' }
   ];
   readonly patterns: { id: RugPattern; name: string }[] = [
     { id: 'plain', name: 'Liso' }, { id: 'checker', name: 'Ajedrez' }, { id: 'waves', name: 'Ondas' }
@@ -342,7 +342,7 @@ export class TuftingDisenoComponent implements AfterViewInit, OnDestroy {
     link.download = `${this.design().name.trim().replace(/[^a-zA-Z0-9_-]+/g, '-').slice(0, 60) || 'mi-tufting'}.png`;
     link.href = this.canvas.toDataURL({ format: 'png', multiplier: 2, ...bounds });
     link.click();
-    this.message.set('Boceto descargado. Puedes adjuntarlo a tu cotizacion.');
+    this.message.set('Boceto descargado. Puedes adjuntarlo a tu cotización.');
   }
 
   quote(): void {
@@ -352,7 +352,7 @@ export class TuftingDisenoComponent implements AfterViewInit, OnDestroy {
     const pattern = this.patterns.find((item) => item.id === d.pattern)?.name;
     const text = [
       'Hola, quiero cotizar mi diseno de tufting.',
-      `Nombre: ${d.name || 'Mi custom rug'}`, `Forma: ${shape}`,
+      `Nombre: ${d.name || 'Mi tapete'}`, `Forma: ${shape}`,
       `Medidas: ${d.width} x ${d.height} cm`, `Base: ${pattern}`,
       `Colores de base: ${d.baseColor} / ${d.accentColor}`, `Uso: ${d.use}`, `Acabado: ${d.finish}`,
       d.notes.trim() ? `Detalles: ${d.notes.trim()}` : '',

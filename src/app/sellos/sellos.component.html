@@ -3,14 +3,13 @@
     <div class="stamps-container header-inner">
       <a class="stamps-logo" routerLink="/principal" aria-label="UNIALRE Sellos">
         <img class="corporate-logo" src="assets/img/logo-unialre-2026.png" alt="Universal de Altos Relieves S.A.S.">
-        <span>UNIALRE Sellos</span>
       </a>
 
       <nav class="stamps-nav" aria-label="Menu principal sellos">
-        <a routerLink="/sellos">Nuestros productos</a>
-        <a href="#asesoria">Asesoria</a>
+        <a routerLink="/sellos" routerLinkActive="is-active" ariaCurrentWhenActive="page">Nuestros productos</a>
+        <a href="#asesoria">Asesoría</a>
         <a href="#contacto-sellos">Contacto</a>
-        <a routerLink="/principal" class="back-link">Pagina principal</a>
+        <a routerLink="/principal" class="back-link">Página principal</a>
       </nav>
     </div>
   </header>
@@ -18,165 +17,189 @@
   <section class="search-band">
     <div class="stamps-container search-panel">
       <div>
-        <p class="kicker">Busqueda</p>
-        <h1>Encuentra el sello ideal para tu negocio</h1>
+        <h1>Sellos para tu negocio</h1>
+        <p class="search-intro">Automáticos, fechadores e insumos con marcación clara y precisa.</p>
       </div>
+      <img class="search-visual" src="assets/img/profesiones.jpg" alt="Sellos automaticos y manuales sobre una mesa de trabajo">
       <label class="search-box">
-        <i class="fa fa-search"></i>
-        <input type="search" placeholder="Buscar automaticos, fechadores, tintas...">
-      </label>
-    </div>
-  </section>
-
-  <section class="shop-hero">
-    <div class="stamps-container">
-      <p><a routerLink="/">Inicio</a> / Sellos</p>
-      <h2>Nuestros productos</h2>
-    </div>
-  </section>
-
-  <main class="stamps-container shop-layout">
-    <aside class="category-panel" aria-label="Categorias de sellos">
-      <p>Elige una categoria</p>
-      <div class="category-list">
-        <button
-          *ngFor="let category of categories"
-          type="button"
-          [class.active]="selectedCategory === category.name"
-          (click)="selectCategory(category.name)"
-        >
-          <span>{{ category.name }}</span>
-          <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
-        </button>
+        <i class="fa fa-search" aria-hidden="true"></i>
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="currentPage = 1"
+          aria-label="Buscar productos de sellos"
+          placeholder="Buscar automáticos, fechadores, tintas...">
+        </label>
       </div>
-    </aside>
-
-    <section class="products-area">
-      <div class="products-toolbar">
-        <p>Mostrando {{ firstShownProduct }}-{{ lastShownProduct }} de {{ products.length }} resultados</p>
-        <select [(ngModel)]="sortOption" aria-label="Ordenar productos de sellos">
-          <option value="popular">Ordenar por popularidad</option>
-          <option value="latest">Ordenar por las ultimas</option>
-          <option value="price-low">Ordenar por precio: bajo a alto</option>
-          <option value="price-high">Ordenar por precio: alto a bajo</option>
-        </select>
-      </div>
-
-      <div class="products-grid">
-        <article class="product-card" *ngFor="let product of filteredProducts">
-          <div class="product-image">
-            <button
-              *ngIf="product.image"
-              class="image-zoom-button"
-              type="button"
-              (click)="openImagePreview(product)"
-              [attr.aria-label]="'Ver imagen ampliada de ' + product.name"
-            >
-              <img [src]="product.image" [alt]="product.name" (error)="hideBrokenImage(product)">
-            </button>
-            <i *ngIf="!product.image" class="fa" [class]="product.icon || 'fa-stamp'"></i>
-          </div>
-          <div class="product-info">
-            <span>{{ product.category }}</span>
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description }}</p>
-            <button class="product-reviews-link" type="button" (click)="openReviews(product)">
-              <i class="fa-regular fa-star" aria-hidden="true"></i> Opiniones y calificación
-            </button>
-            <div class="product-actions">
-              <button type="button" (click)="addToCart(product)">
-                <i class="fa fa-cart-plus"></i>
-                <strong class="cart-button-label">
-                  {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}
-                </strong>
-              </button>
-              <button type="button" (click)="openWhatsApp(product)">
-                <i class="fa-brands fa-whatsapp"></i>
-                Consultar por WhatsApp
-              </button>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <nav class="pagination" aria-label="Paginacion sellos">
-        <button
-          *ngFor="let page of pages"
-          type="button"
-          [class.active]="currentPage === page"
-          (click)="goToPage(page)"
-        >
-          {{ page }}
-        </button>
-        <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
-          <i class="fa fa-arrow-right"></i>
-        </button>
-      </nav>
     </section>
-  </main>
 
-  <section id="asesoria" class="advice-band">
-    <div class="stamps-container advice-grid">
-      <div>
-        <p class="kicker">Asesoria</p>
-        <h2>Te ayudamos a definir texto, tamano y tipo de sello</h2>
+    <section class="shop-hero">
+      <div class="stamps-container">
+        <p><a routerLink="/">Inicio</a> / Sellos</p>
+        <h2>Nuestros productos</h2>
       </div>
-      <div class="advice-cards">
+    </section>
+
+    <main class="stamps-container shop-layout">
+      <aside class="category-panel" aria-label="Categorias de sellos">
+        <p>Elige una categoria</p>
+        <div class="category-list">
+          @for (category of categories; track category) {
+            <button
+              type="button"
+              [class.active]="selectedCategory === category.name"
+              (click)="selectCategory(category.name)"
+              >
+              <span>{{ category.name }}</span>
+              <small>{{ category.count }} {{ category.count === 1 ? 'producto' : 'productos' }}</small>
+            </button>
+          }
+        </div>
+      </aside>
+
+      <section class="products-area">
+        <div class="products-toolbar">
+          <p>{{ matchingProducts.length ? 'Mostrando ' + firstShownProduct + '-' + lastShownProduct + ' de ' + matchingProducts.length + ' resultados' : '0 resultados' }}</p>
+          <select [(ngModel)]="sortOption" aria-label="Ordenar productos de sellos">
+            <option value="name">Ordenar por nombre</option>
+            <option value="price-low">Ordenar por precio: bajo a alto</option>
+            <option value="price-high">Ordenar por precio: alto a bajo</option>
+          </select>
+        </div>
+
+        <div class="products-grid">
+          @for (product of filteredProducts; track product) {
+            <article class="product-card">
+              <div class="product-image">
+                @if (product.image) {
+                  <button
+                    class="image-zoom-button"
+                    type="button"
+                    (click)="openImagePreview(product)"
+                    [attr.aria-label]="'Ver imagen ampliada de ' + product.name"
+                    >
+                    <img [src]="product.image" [alt]="product.name" (error)="hideBrokenImage(product)">
+                  </button>
+                }
+                @if (!product.image) {
+                  <i class="fa" [class]="product.icon || 'fa-stamp'"></i>
+                }
+              </div>
+              <div class="product-info">
+                <span>{{ product.category }}</span>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                @if (product.price) {
+                  <strong class="product-price">{{ product.price }}</strong>
+                }
+                <button class="product-reviews-link" type="button" (click)="openReviews(product)">
+                  <i class="fa-regular fa-star" aria-hidden="true"></i> Opiniones y calificación
+                </button>
+                <div class="product-actions">
+                  <button type="button" (click)="addToCart(product)">
+                    <i class="fa fa-cart-plus"></i>
+                    <strong class="cart-button-label">
+                      {{ cartQuantity(product) ? cartQuantity(product) + ' en carrito' : 'Agregar al carrito' }}
+                    </strong>
+                  </button>
+                  <button type="button" (click)="openWhatsApp(product)">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Consultar por WhatsApp
+                  </button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+
+        @if (matchingProducts.length === 0) {
+          <p class="products-empty" role="status">
+            No hay sellos que coincidan. Prueba con otro nombre o categoría.
+          </p>
+        }
+
+        <nav class="pagination" aria-label="Paginacion sellos">
+          @for (page of pages; track page) {
+            <button
+              type="button"
+              [class.active]="currentPage === page"
+              (click)="goToPage(page)"
+              >
+              {{ page }}
+            </button>
+          }
+          <button type="button" aria-label="Pagina siguiente" (click)="goToPage(currentPage + 1)">
+            <i class="fa fa-arrow-right"></i>
+          </button>
+        </nav>
+      </section>
+    </main>
+
+    <section id="asesoria" class="advice-band">
+      <div class="stamps-container advice-grid">
         <div>
-          <strong>98%</strong>
-          <span>Rapidez en entrega</span>
+          <h2>Elige el sello adecuado</h2>
+        </div>
+        <div class="advice-cards">
+          <div>
+            <strong>Manual y automático</strong>
+            <span>Opciones para distintas necesidades.</span>
+          </div>
+          <div>
+            <strong>Texto y tamaño</strong>
+            <span>Personaliza tu sello según el uso.</span>
+          </div>
+          <div>
+            <strong>Asesoría directa</strong>
+            <span>Te ayudamos a elegir el modelo adecuado.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contacto-sellos" class="stamps-footer">
+      <div class="stamps-container footer-grid">
+        <div>
+          <h3>UNIALRE Sellos</h3>
+          <p>Sellos, insumos y personalizacion con cobertura nacional.</p>
         </div>
         <div>
-          <strong>96%</strong>
-          <span>Satisfaccion del cliente</span>
+          <h3>Productos</h3>
+          <a routerLink="/sellos">Nuestros productos</a>
+          <a href="#asesoria">Asesoria</a>
         </div>
         <div>
-          <strong>100%</strong>
-          <span>Calidad de marcacion</span>
+          <h3>Contacto</h3>
+          <p>312 498 6325</p>
+          <p>ventas@nacionaldesellos.co</p>
+        </div>
+        <div>
+          <h3>Redes</h3>
+          <div class="stamps-social">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+      <div class="copyright">2026 UNIALRE Sellos © - Todos los derechos reservados.</div>
+    </footer>
 
-  <footer id="contacto-sellos" class="stamps-footer">
-    <div class="stamps-container footer-grid">
-      <div>
-        <h3>UNIALRE Sellos</h3>
-        <p>Sellos, insumos y personalizacion con cobertura nacional.</p>
-      </div>
-      <div>
-        <h3>Productos</h3>
-        <a routerLink="/sellos">Nuestros productos</a>
-        <a href="#asesoria">Asesoria</a>
-      </div>
-      <div>
-        <h3>Contacto</h3>
-        <p>312 498 6325</p>
-        <p>ventas@nacionaldesellos.co</p>
-      </div>
-      <div>
-        <h3>Redes</h3>
-        <div class="stamps-social">
-          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+    <a class="stamps-whatsapp" href="https://wa.me/573124986325" target="_blank" rel="noreferrer" aria-label="WhatsApp sellos">
+      <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    @if (selectedImage) {
+      <div class="image-modal" role="dialog" aria-modal="true" [attr.aria-label]="'Imagen ampliada de ' + selectedImage.name" (click)="closeImagePreview()">
+        <div class="image-modal__content" (click)="$event.stopPropagation()">
+          <button class="image-modal__close" type="button" aria-label="Cerrar imagen ampliada" (click)="closeImagePreview()">
+            <i class="fa fa-xmark"></i>
+          </button>
+          <img [src]="selectedImage.image" [alt]="selectedImage.name">
+          <h3>{{ selectedImage.name }}</h3>
         </div>
       </div>
-    </div>
-    <div class="copyright">2026 UNIALRE Sellos © - Todos los derechos reservados.</div>
-  </footer>
-
-  <a class="stamps-whatsapp" href="https://wa.me/573124986325" target="_blank" rel="noreferrer" aria-label="WhatsApp sellos">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
-
-  <div class="image-modal" *ngIf="selectedImage" role="dialog" aria-modal="true" [attr.aria-label]="'Imagen ampliada de ' + selectedImage.name" (click)="closeImagePreview()">
-    <div class="image-modal__content" (click)="$event.stopPropagation()">
-      <button class="image-modal__close" type="button" aria-label="Cerrar imagen ampliada" (click)="closeImagePreview()">
-        <i class="fa fa-xmark"></i>
-      </button>
-      <img [src]="selectedImage.image" [alt]="selectedImage.name">
-      <h3>{{ selectedImage.name }}</h3>
-    </div>
+    }
+    @if (activeReviewProduct; as product) {
+      <app-product-reviews [productId]="product.id" [productLine]="product.line" [productName]="product.name" (closed)="activeReviewProduct = null"></app-product-reviews>
+    }
   </div>
-  <app-product-reviews *ngIf="activeReviewProduct as product" [productId]="product.id" [productLine]="product.line" [productName]="product.name" (closed)="activeReviewProduct = null"></app-product-reviews>
-</div>

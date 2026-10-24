@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, DestroyRef, ElementRef, OnDestroy, ViewChild, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,6 @@ interface TuftingCategory {
   id: string;
   name: string;
   description: string;
-  icon: string;
   detail: string;
 }
 
@@ -32,7 +31,7 @@ interface TuftingProduct {
 @Component({
   selector: 'app-tufting',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CartWidgetComponent, ProductReviewsComponent],
+  imports: [FormsModule, RouterLink, CartWidgetComponent, ProductReviewsComponent],
   templateUrl: './tufting.component.html',
   styleUrls: ['./tufting.component.css']
 })
@@ -55,17 +54,17 @@ export class TuftingComponent implements AfterViewInit, OnDestroy {
   private readonly productsRefresh = signal(0);
   private readonly cartItems;
   categories: TuftingCategory[] = [
-    { id: 'custom', name: 'Tapetes custom', description: 'Tu logo, frase o idea convertida en una pieza para tu espacio.', icon: 'fa-rug', detail: 'Forma, colores y medidas a eleccion' },
-    { id: 'wall', name: 'Wall art', description: 'Arte textil para darle color y textura a tus paredes.', icon: 'fa-image', detail: 'Para habitaciones, estudios y negocios' },
-    { id: 'gifts', name: 'Regalos unicos', description: 'Iniciales y detalles personales para una pieza con significado.', icon: 'fa-gift', detail: 'Personalizacion para cada ocasion' },
-    { id: 'drops', name: 'Drops de coleccion', description: 'Diseños coloridos para escritorios y rincones especiales.', icon: 'fa-bolt', detail: 'Disponibilidad y medidas por confirmar' }
+    { id: 'custom', name: 'Tapetes a medida', description: 'Convierte tu logo, frase o dibujo en una pieza para tu casa o negocio.', detail: 'Forma, tamaño y colores a elección' },
+    { id: 'wall', name: 'Arte para pared', description: 'Piezas textiles para dar color y textura a tus paredes.', detail: 'Formato y montaje por cotizar' },
+    { id: 'gifts', name: 'Regalos únicos', description: 'Iniciales, nombres y colores pensados para una persona especial.', detail: 'Personalizable para cada ocasión' },
+    { id: 'drops', name: 'Diseños de colección', description: 'Piezas coloridas para escritorios y rincones pequeños.', detail: 'Precio y disponibilidad al cotizar' }
   ];
 
   products: TuftingProduct[] = [
-    { id: 1001, name: 'Tapete logo personalizado', category: 'Custom', categoryId: 'custom', price: 'Desde $120.000', image: 'assets/img/tufting/producto-logo-madeja.png', badge: 'A tu medida', description: 'Una pieza con la identidad de tu marca o tu idea favorita. El diseño, los colores y la forma se ajustan durante la cotizacion.', use: 'Piso, estudio o negocio' },
-    { id: 1002, name: 'Wall art smile', category: 'Wall art', categoryId: 'wall', price: 'Desde $95.000', image: 'assets/img/tufting/producto-smile.png', badge: 'Para pared', description: 'Una cara sonriente y bloques de color para una pared con personalidad. Consulta el formato y las opciones de montaje.', use: 'Decoracion de pared' },
-    { id: 1003, name: 'Tapete iniciales', category: 'Regalos', categoryId: 'gifts', price: 'Desde $85.000', image: 'assets/img/tufting/producto-iniciales.png', badge: 'Personalizable', description: 'Iniciales, nombres y una paleta elegida por ti. Una propuesta de regalo que puedes adaptar a la persona y a su espacio.', use: 'Regalo o decoracion' },
-    { id: 1004, name: 'Mini rug color pop', category: 'Drops', categoryId: 'drops', price: 'Desde $70.000', image: 'assets/img/tufting/producto-color-pop.png', badge: 'Coleccion', description: 'Un diseño ajedrez en rosa y menta para un acento de color. Consulta medidas, disponibilidad y adaptaciones para escritorio.', use: 'Escritorio o rincon decorativo' }
+    { id: 1001, name: 'Tapete con logo personalizado', category: 'Tapetes a medida', categoryId: 'custom', price: 'Desde $120.000', image: 'assets/img/tufting/producto-logo-madeja.png', badge: 'A tu medida', description: 'Una pieza con la identidad de tu marca o tu idea favorita. El diseño, los colores y la forma se definen durante la cotización.', use: 'Piso, estudio o negocio' },
+    { id: 1002, name: 'Arte textil smile', category: 'Arte para pared', categoryId: 'wall', price: 'Desde $95.000', image: 'assets/img/tufting/producto-smile.png', badge: 'Para pared', description: 'Una cara sonriente y bloques de color para una pared con personalidad. Consulta el formato y las opciones de montaje.', use: 'Decoración de pared' },
+    { id: 1003, name: 'Tapete de iniciales', category: 'Regalos únicos', categoryId: 'gifts', price: 'Desde $85.000', image: 'assets/img/tufting/producto-iniciales.png', badge: 'Personalizable', description: 'Iniciales, nombres y una paleta elegida por ti. Una propuesta de regalo que puedes adaptar a la persona y a su espacio.', use: 'Regalo o decoración' },
+    { id: 1004, name: 'Mini rug color pop', category: 'Diseños de colección', categoryId: 'drops', price: 'Desde $70.000', image: 'assets/img/tufting/producto-color-pop.png', badge: 'Colección', description: 'Un diseño de cuadros en rosa y menta para dar un acento de color. Consulta medidas, disponibilidad y adaptaciones para escritorio.', use: 'Escritorio o rincón decorativo' }
   ];
 
   readonly filteredProducts = computed(() => {
